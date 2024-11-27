@@ -1,0 +1,33 @@
+/* src/components/Footer/Footer.css */
+
+/* Footer Container */
+footer {
+  background-color: #f8f8f8;
+  padding: 1rem 2rem;
+  text-align: center;
+  border-top: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+  color: #666666;
+}
+
+/* Footer Links */
+footer a {
+  color: #1a73e8;
+  text-decoration: none;
+  margin: 0 0.3rem;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* src/components/Footer/Footer.css */
+
+/* Additional Footer Links Styling */
+footer a {
+  margin: 0 0.5rem;
+}
+
+footer a:last-child {
+  margin-right: 0;
+}

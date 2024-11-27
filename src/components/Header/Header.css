@@ -1,0 +1,44 @@
+/* src/components/Header/Header.css */
+
+/* Header Container */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f8f8;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Header Title */
+header h1 {
+  font-size: 1.5rem;
+  color: #1a73e8;
+}
+
+/* Navigation Links */
+nav a {
+  margin: 0 0.5rem;
+  font-size: 1rem;
+  color: #333333;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #1a73e8;
+  text-decoration: underline;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+}
+
+nav a {
+  margin-left: 1rem;
+}
+
+nav a:first-child {
+  margin-left: 0;
+}
