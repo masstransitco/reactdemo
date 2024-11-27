@@ -6,7 +6,7 @@ import SceneView from "@arcgis/core/views/SceneView";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Compass from "@arcgis/core/widgets/Compass";
 import PropTypes from "prop-types";
-import "./SceneContainer.css";
+import "./MapContainer.css";
 
 // Import ArcGIS CSS
 import "@arcgis/core/assets/esri/themes/light/main.css";
