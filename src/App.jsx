@@ -5,10 +5,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import About from "./components/About";
 import NotFound from "./components/NotFound";
-import MapContainer from "./components/Map/MapContainer";
-import SceneContainer from "./components/Scene/SceneContainer";
+import MapSceneToggle from "./components/MapSceneToggle";
 import Footer from "./components/Footer/Footer"; // Import Footer component
-import Header from "./components/Header/Header"; // Import Header component if available
+import Header from "./components/Header/Header"; // Import Header component if needed
 import "./app.css";
 import debounce from "lodash.debounce"; // Ensure lodash.debounce is installed
 
@@ -68,26 +67,14 @@ function App() {
 
   return (
     <Router>
-      <Header /> {/* Include Header component if available */}
       <Routes>
         <Route
           path="/"
           element={
             <Home>
-              <MapContainer
-                onMapViewLoad={(mapView) => {
-                  mapViewRef.current = mapView;
-                  // Listen for camera changes
-                  mapView.watch("camera", onMapCameraChange);
-                }}
-              />
-              <SceneContainer
-                onSceneViewLoad={(sceneView) => {
-                  sceneViewRef.current = sceneView;
-                  // Listen for camera changes
-                  sceneView.watch("camera", onSceneCameraChange);
-                }}
-                onCameraChange={onSceneCameraChange}
+              <MapSceneToggle
+                onMapCameraChange={onMapCameraChange}
+                onSceneCameraChange={onSceneCameraChange}
               />
             </Home>
           }
@@ -95,7 +82,6 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer /> {/* Include Footer component */}
     </Router>
   );
 }

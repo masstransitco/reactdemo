@@ -14,9 +14,12 @@ import "@arcgis/core/assets/esri/themes/light/main.css";
 const SceneContainer = ({
   onSceneViewLoad,
   selectedStation,
+  onStationSelect,
   onSidebarMinimize,
+  isVisible, // New prop to control visibility
 }) => {
   const sceneRef = useRef(null);
+  const viewRef = useRef(null); // To store SceneView instance
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [carLayer, setCarLayer] = useState(null); // Reference to car layer
@@ -30,9 +33,8 @@ const SceneContainer = ({
     spatialReference: { wkid: 4326 },
   };
 
+  // Initialization Effect
   useEffect(() => {
-    let view;
-
     const initializeScene = async () => {
       try {
         // Initialize WebScene with your specific Web Scene ID
@@ -42,8 +44,7 @@ const SceneContainer = ({
           },
         });
 
-        // Create the SceneView
-        view = new SceneView({
+        const view = new SceneView({
           container: sceneRef.current,
           map: webScene,
           constraints: {
@@ -73,6 +74,8 @@ const SceneContainer = ({
           },
         });
 
+        viewRef.current = view;
+
         // Wait for the view to load
         await view.when();
         setIsLoading(false); // Scene has loaded
@@ -84,8 +87,9 @@ const SceneContainer = ({
 
         // Add car locations layer with definition expression to load only within Hong Kong
         const carLayerInstance = new FeatureLayer({
-          url: "https://services.arcgis.com/a66edb1852cc43a2825097835dad7a46/arcgis/rest/services/Stations/FeatureServer/0", // Replace with actual URL
-          outFields: ["*"],
+          url:
+            "https://services.arcgis.com/a66edb1852cc43a2825097835dad7a46/arcgis/rest/services/Stations/FeatureServer/0", // Replace with actual URL
+          outFields: ["Station_ID", "Station_Name", "Location"], // Specify needed fields
           popupTemplate: {
             title: "Station: {Station_Name}", // Adjust field names as per data
             content: "Station ID: {Station_ID}<br>Location: {Location}",
@@ -152,7 +156,9 @@ const SceneContainer = ({
                 name: graphic.attributes.Station_Name,
                 location: graphic.geometry, // Geometry object
               };
-              onStationSelect(stationData);
+              if (onStationSelect) {
+                onStationSelect(stationData);
+              }
             }
           }
         });
@@ -165,14 +171,15 @@ const SceneContainer = ({
 
     initializeScene();
 
-    // Cleanup on unmount
+    // Cleanup Effect
     return () => {
-      if (view) {
-        view.destroy();
+      if (viewRef.current) {
+        viewRef.current.destroy();
       }
     };
-  }, [onSceneViewLoad, onStationSelect, hongKongExtent]);
+  }, [onSceneViewLoad, onStationSelect]);
 
+  // Effect to handle selectedStation changes
   useEffect(() => {
     if (!carLayer) return;
 
@@ -203,12 +210,31 @@ const SceneContainer = ({
         ],
       };
 
+      // Highlight selected station
+      carLayer.queryFeatures({
+        where: `Station_ID = '${selectedStation.id}'`,
+        outFields: ["*"],
+      }).then((result) => {
+        result.features.forEach((graphic) => {
+          graphic.symbol = {
+            type: "simple-marker",
+            color: "blue",
+            outline: {
+              color: "#FFFFFF",
+              width: 1,
+            },
+            size: 10,
+          };
+        });
+        carLayer.refresh();
+      });
+
       // Pan camera to selected station
-      const { geometry } = selectedStation;
-      if (geometry) {
-        view.goTo({
-          target: geometry,
-          zoom: 1000, // Adjust as needed
+      const { location } = selectedStation; // geometry object
+      if (location && viewRef.current) {
+        viewRef.current.goTo({
+          target: location,
+          zoom: 1500, // Adjust as needed
           tilt: 0,
           heading: 0,
         });
@@ -219,35 +245,77 @@ const SceneContainer = ({
         type: "simple",
         symbol: {
           type: "simple-marker",
-          color: "#FF0000",
+          color: "#555555", // Gray color for stations
           outline: {
-            color: "#000000",
+            color: "#FFFFFF",
             width: 1,
           },
-          size: 8,
+          size: 6,
         },
       };
+
+      // Reset symbols of all graphics
+      carLayer.queryFeatures({
+        where: "1=1",
+        outFields: ["*"],
+      }).then((result) => {
+        result.features.forEach((graphic) => {
+          graphic.symbol = {
+            type: "simple-marker",
+            color: "#555555",
+            outline: {
+              color: "#FFFFFF",
+              width: 1,
+            },
+            size: 6,
+          };
+        });
+        carLayer.refresh();
+      });
     }
   }, [selectedStation, carLayer]);
 
   return (
-    <>
+    <div
+      className={`scene-container ${
+        isVisible ? "visible" : "hidden"
+      }`}
+    >
       {error ? (
         <div className="error-message">{error}</div>
       ) : (
         <div
-          className={`map-container ${isLoading ? "loading" : ""}`}
-          ref={mapRef}
+          className={`scene-view ${isLoading ? "loading" : ""}`}
+          ref={sceneRef}
         ></div>
       )}
-    </>
+      {selectedStation && (
+        <div className="sidebar">
+          <button className="minimize-button" onClick={onSidebarMinimize}>
+            &times;
+          </button>
+          <div className="station-details">
+            <h2>{selectedStation.name}</h2>
+            <p>Station ID: {selectedStation.id}</p>
+            {/* Add more details as needed */}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
-MapContainer.propTypes = {
-  onMapViewLoad: PropTypes.func.isRequired,
-  onStationSelect: PropTypes.func.isRequired,
-  selectedStation: PropTypes.object,
+// Define PropTypes outside the component
+SceneContainer.propTypes = {
+  onSceneViewLoad: PropTypes.func.isRequired,
+  onStationSelect: PropTypes.func, // Optional
+  selectedStation: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    location: PropTypes.object.isRequired, // Geometry object
+  }),
+  onSidebarMinimize: PropTypes.func.isRequired,
+  isVisible: PropTypes.bool.isRequired, // New prop
 };
 
-export default MapContainer;
+export default SceneContainer;

@@ -1,44 +1,85 @@
 /* src/components/Header/Header.css */
 
-header {
-  background-color: #f8f9fa; /* Light gray background */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   padding: 10px 20px;
   display: flex;
+  justify-content: space-between; /* Space between toggle-container and scene-toggle-button */
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: transparent; /* Make header background transparent */
+  z-index: 1000;
 }
 
 .toggle-container {
+  position: relative;
   display: flex;
   align-items: center;
-  position: relative;
+  background: rgba(255, 255, 255, 0.2); /* Optional: semi-transparent background */
+  border-radius: 25px;
+  padding: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .toggle-base {
-  width: 100px;
-  height: 30px;
-  background-color: #e0e0e0;
-  border-radius: 15px;
-  margin-right: 10px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: #555555; /* Base color */
+  border-radius: 2px;
+  z-index: -1;
 }
 
 .toggle-button {
-  padding: 5px 15px;
+  flex: 1;
+  padding: 10px 20px;
+  margin: 0;
   border: none;
-  background-color: transparent;
+  background: none;
   cursor: pointer;
   font-size: 16px;
+  color: #ffffff; /* Button text color */
   transition: background-color 0.3s, color 0.3s;
 }
 
 .toggle-button.active {
-  background-color: #007bff; /* Blue background when active */
-  color: #fff;
-  border-radius: 15px;
+  background-color: #ffffff; /* Active button background */
+  color: #000000; /* Active button text color */
+  border-radius: 20px;
 }
 
-.toggle-button:not(.active):hover {
-  background-color: #dcdcdc;
-  border-radius: 15px;
+.toggle-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+}
+
+.scene-toggle-button {
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.scene-toggle-button:hover {
+  background-color: #dddddd;
+}
+
+@media (max-width: 600px) {
+  .toggle-button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .scene-toggle-button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
 }

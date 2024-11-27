@@ -3,35 +3,46 @@
 import React, { useState, useRef } from "react";
 import MapContainer from "./Map/MapContainer";
 import SceneContainer from "./Scene/SceneContainer";
+import Header from "./Header/Header";
+import Footer from "./Footer/Footer";
 import "./MapSceneToggle.css";
 
 const MapSceneToggle = () => {
   const [selectedStation, setSelectedStation] = useState(null);
+  const [isSceneVisible, setIsSceneVisible] = useState(false); // Visibility state
   const mapViewRef = useRef(null);
   const sceneViewRef = useRef(null);
 
-  // Callback when a station is selected in the MapContainer
+  // Callback when a station is selected in the MapContainer or SceneContainer
   const handleStationSelect = (station) => {
     setSelectedStation(station);
+    setIsSceneVisible(true); // Show the SceneContainer when a station is selected
   };
 
   // Callback to minimize the SceneContainer sidebar
   const handleSidebarMinimize = () => {
     setSelectedStation(null);
+    setIsSceneVisible(false); // Hide the SceneContainer when minimized
   };
 
-  // Store MapView instance
+  // Toggle SceneContainer visibility
+  const toggleSceneVisibility = () => {
+    setIsSceneVisible((prev) => !prev);
+  };
+
+  // Store MapView instance (if needed for future enhancements)
   const handleMapViewLoad = (view) => {
     mapViewRef.current = view;
   };
 
-  // Store SceneView instance
+  // Store SceneView instance (if needed for future enhancements)
   const handleSceneViewLoad = (view) => {
     sceneViewRef.current = view;
   };
 
   return (
     <div className="map-scene-toggle">
+      <Header onToggleScene={toggleSceneVisibility} /> {/* Pass toggle function */}
       <MapContainer
         onMapViewLoad={handleMapViewLoad}
         onStationSelect={handleStationSelect}
@@ -40,8 +51,11 @@ const MapSceneToggle = () => {
       <SceneContainer
         onSceneViewLoad={handleSceneViewLoad}
         selectedStation={selectedStation}
+        onStationSelect={handleStationSelect}
         onSidebarMinimize={handleSidebarMinimize}
+        isVisible={isSceneVisible} // Pass visibility prop
       />
+      <Footer />
     </div>
   );
 };

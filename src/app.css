@@ -11,23 +11,25 @@
   box-sizing: border-box;
 }
 
-/* Set body and html to occupy full height and use a default font */
-body, html, #root {
-  height: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #ffffff; /* Set a default background color */
-  color: #333333; /* Default text color */
+body, html, #root, .app-container {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #000000; /* Uber's black */
+    color: #ffffff; /* Default text color */
+    font-family: Arial, sans-serif;
 }
 
 /* ===========================================
    2. Layout Configuration
    =========================================== */
 
-/* Home Container: Flex layout to stack header, main, and footer */
+
 .home-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+    padding-top: 60px; /* Adjust based on header height */
+    position: relative;
+    height: 100%;
 }
 
 /* Header and Footer Styles */

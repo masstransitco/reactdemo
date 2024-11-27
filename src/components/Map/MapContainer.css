@@ -2,18 +2,21 @@
 
 /* Container for the 2D Map */
 .map-container {
-  /* Occupies the full viewport height */
-  height: 100vh;
-
-  /* Occupies the full width of its parent */
   width: 100%;
-
-  /* Ensures the container positions its children relative to itself */
-  position: relative;
-
-  /* Optional: Add a subtle background color while the map loads */
-  background-color: #f0f0f0;
+  height: 100vh;
+  background-color: #000000; /* Match app background */
 }
+
+.loading::after {
+  content: "Loading...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+  color: #ffffff;
+}
+
 
 /* Error Message Styling */
 .error-message {
@@ -21,6 +24,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  color: red;
+  text-align: center;
+  margin-top: 20px;
 
   /* Occupies the full viewport to overlay the map */
   height: 100vh;
