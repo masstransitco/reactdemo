@@ -11,10 +11,15 @@ import "./SceneContainer.css";
 // Import ArcGIS CSS
 import "@arcgis/core/assets/esri/themes/light/main.css";
 
-const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
+const SceneContainer = ({
+  onSceneViewLoad,
+  selectedStation,
+  onSidebarMinimize,
+}) => {
   const sceneRef = useRef(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [carLayer, setCarLayer] = useState(null); // Reference to car layer
 
   // Define Hong Kong extent in WGS84
   const hongKongExtent = {
@@ -27,7 +32,6 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
 
   useEffect(() => {
     let view;
-    let cameraWatchHandle;
 
     const initializeScene = async () => {
       try {
@@ -45,6 +49,8 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
           constraints: {
             geometry: hongKongExtent,
             rotationEnabled: false,
+            tiltEnabled: false,
+            zoomEnabled: true,
             minScale: 500000, // Adjust as needed
             maxScale: 1000, // Adjust as needed
           },
@@ -77,27 +83,40 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
         }
 
         // Add car locations layer with definition expression to load only within Hong Kong
-        const carLayer = new FeatureLayer({
-          url: "https://your-cartrack-api-endpoint.com/car-locations", // Replace with your actual API endpoint
+        const carLayerInstance = new FeatureLayer({
+          url: "https://services.arcgis.com/a66edb1852cc43a2825097835dad7a46/arcgis/rest/services/Stations/FeatureServer/0", // Replace with actual URL
           outFields: ["*"],
           popupTemplate: {
-            title: "Car Location",
-            content: "Car ID: {car_id}<br>Location: {location}",
+            title: "Station: {Station_Name}", // Adjust field names as per data
+            content: "Station ID: {Station_ID}<br>Location: {Location}",
           },
-          // Enable clustering
+          // Enable clustering if desired
           featureReduction: {
             type: "cluster",
             clusterRadius: "100px",
             popupTemplate: {
               title: "Cluster Summary",
-              content: "You have {cluster_count} cars in this area.",
+              content: "You have {cluster_count} stations in this area.",
             },
           },
           definitionExpression:
             "longitude >= 113.7 AND longitude <= 114.4 AND latitude >= 22.15 AND latitude <= 22.55", // Adjust field names as per your data
+          renderer: {
+            type: "simple",
+            symbol: {
+              type: "simple-marker",
+              color: "#555555", // Gray color for other stations
+              outline: {
+                color: "#FFFFFF",
+                width: 1,
+              },
+              size: 6,
+            },
+          },
         });
 
-        webScene.add(carLayer);
+        webScene.add(carLayerInstance);
+        setCarLayer(carLayerInstance);
 
         // Initialize the Compass widget
         const compassWidget = new Compass({
@@ -112,7 +131,7 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
         view.on("click", async (event) => {
           const response = await view.hitTest(event);
           const results = response.results.filter(
-            (result) => result.graphic.layer === carLayer
+            (result) => result.graphic.layer === carLayerInstance
           );
 
           if (results.length > 0) {
@@ -127,30 +146,15 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
               });
             } else {
               // It's an individual feature
-              // Optionally, open a popup or perform other actions
-              view.popup.open({
-                title: graphic.attributes.car_id,
-                content: graphic.attributes.location,
-                location: graphic.geometry,
-              });
+              // Notify parent of selection
+              const stationData = {
+                id: graphic.attributes.Station_ID, // Adjust field names
+                name: graphic.attributes.Station_Name,
+                location: graphic.geometry, // Geometry object
+              };
+              onStationSelect(stationData);
             }
           }
-        });
-
-        // Debounce camera changes to optimize performance
-        let debounceTimeout;
-        const debounceDelay = 300; // milliseconds
-
-        // Watch for camera changes and debounce the callback
-        cameraWatchHandle = view.watch("camera", (newCamera) => {
-          if (debounceTimeout) {
-            clearTimeout(debounceTimeout);
-          }
-          debounceTimeout = setTimeout(() => {
-            if (onCameraChange) {
-              onCameraChange(newCamera);
-            }
-          }, debounceDelay);
         });
       } catch (err) {
         console.error("Error initializing SceneView:", err);
@@ -166,11 +170,65 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
       if (view) {
         view.destroy();
       }
-      if (cameraWatchHandle) {
-        cameraWatchHandle.remove();
-      }
     };
-  }, [onSceneViewLoad, onCameraChange]);
+  }, [onSceneViewLoad, onStationSelect, hongKongExtent]);
+
+  useEffect(() => {
+    if (!carLayer) return;
+
+    if (selectedStation) {
+      // Update renderer to highlight selected station
+      carLayer.renderer = {
+        type: "simple",
+        symbol: {
+          type: "simple-marker",
+          color: "#555555", // Gray color for other stations
+          outline: {
+            color: "#FFFFFF",
+            width: 1,
+          },
+          size: 6,
+        },
+        visualVariables: [
+          {
+            type: "color",
+            field: "Station_ID", // Adjust field name
+            stops: [
+              {
+                value: selectedStation.id,
+                color: "blue",
+              },
+            ],
+          },
+        ],
+      };
+
+      // Pan camera to selected station
+      const { geometry } = selectedStation;
+      if (geometry) {
+        view.goTo({
+          target: geometry,
+          zoom: 1000, // Adjust as needed
+          tilt: 0,
+          heading: 0,
+        });
+      }
+    } else {
+      // Reset renderer to default
+      carLayer.renderer = {
+        type: "simple",
+        symbol: {
+          type: "simple-marker",
+          color: "#FF0000",
+          outline: {
+            color: "#000000",
+            width: 1,
+          },
+          size: 8,
+        },
+      };
+    }
+  }, [selectedStation, carLayer]);
 
   return (
     <>
@@ -178,17 +236,18 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
         <div className="error-message">{error}</div>
       ) : (
         <div
-          className={`scene-container ${isLoading ? "loading" : ""}`}
-          ref={sceneRef}
+          className={`map-container ${isLoading ? "loading" : ""}`}
+          ref={mapRef}
         ></div>
       )}
     </>
   );
 };
 
-SceneContainer.propTypes = {
-  onSceneViewLoad: PropTypes.func.isRequired,
-  onCameraChange: PropTypes.func.isRequired,
+MapContainer.propTypes = {
+  onMapViewLoad: PropTypes.func.isRequired,
+  onStationSelect: PropTypes.func.isRequired,
+  selectedStation: PropTypes.object,
 };
 
-export default SceneContainer;
+export default MapContainer;

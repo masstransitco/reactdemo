@@ -15,29 +15,92 @@
   background-color: #f0f0f0;
 }
 
+/* Error Message Styling */
+.error-message {
+  /* Centers the error message both vertically and horizontally */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Occupies the full viewport to overlay the map */
+  height: 100vh;
+  width: 100%;
+
+  /* Background color indicating an error */
+  background-color: #f8d7da;
+
+  /* Text color for readability */
+  color: #721c24;
+
+  /* Increased font size for visibility */
+  font-size: 1.2em;
+
+  /* Centers the text */
+  text-align: center;
+
+  /* Padding for spacing */
+  padding: 20px;
+
+  /* Ensures padding is included in the element's total width and height */
+  box-sizing: border-box;
+
+  /* Optional: Add a border or shadow to highlight the error message */
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+
+  /* Positioning to ensure it overlays the container */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 /* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
   .map-container {
     height: 100vh;
     width: 100%;
   }
+
+  .error-message {
+    font-size: 1em;
+    padding: 15px;
+  }
 }
 
-/* Optional: Style for loading indicators or overlays */
-.map-container::before {
+/* Loading Overlay Styling */
+.map-container.loading::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  /* Customize the loading overlay as needed */
+  /* Semi-transparent overlay */
   background: rgba(255, 255, 255, 0.7);
   z-index: 1;
-  display: none; /* Initially hidden */
+  /* Display the overlay */
+  display: block;
 }
 
-/* Show the loading overlay when the map is loading */
-.map-container.loading::before {
-  display: block;
+/* Loading Spinner */
+.map-container.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  margin: -25px 0 0 -25px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #555;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 2;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
