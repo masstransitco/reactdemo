@@ -4,7 +4,7 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import MapContainer from "./src/components/Map/MapContainer";
-import SceneContainer from "./src/components/Map/MapContainer"
+import SceneContainer from "./src/components/Scene/SceneContainer"
 import About from "./components/About";
 import NotFound from "./components/NotFound";
 import MapSceneToggle from "./components/Map/MapSceneToggle";
