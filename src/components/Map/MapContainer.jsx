@@ -1,6 +1,6 @@
 // src/components/Map/MapContainer.jsx
 
-import React, { useEffect, useRef, useState } from "react"; // Added useState
+import React, { useEffect, useRef, useState } from "react";
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
@@ -14,7 +14,16 @@ import "@arcgis/core/assets/esri/themes/light/main.css";
 const MapContainer = ({ onMapViewLoad }) => {
   const mapRef = useRef(null);
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Moved inside the component
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+
+  // Define Hong Kong extent in WGS84
+  const hongKongExtent = {
+    xmin: 113.7,
+    ymin: 22.15,
+    xmax: 114.4,
+    ymax: 22.55,
+    spatialReference: { wkid: 4326 },
+  };
 
   useEffect(() => {
     let view;
@@ -31,7 +40,13 @@ const MapContainer = ({ onMapViewLoad }) => {
         view = new MapView({
           container: mapRef.current,
           map: webMap,
-          // Optionally, set additional properties like center and zoom
+          constraints: {
+            geometry: hongKongExtent,
+            rotationEnabled: false,
+            minScale: 500000, // Adjust as needed
+            maxScale: 1000,    // Adjust as needed
+          },
+          extent: hongKongExtent, // Set initial extent to Hong Kong
         });
 
         // Wait for the view to load
@@ -43,16 +58,7 @@ const MapContainer = ({ onMapViewLoad }) => {
           onMapViewLoad(view);
         }
 
-        // Optionally, set the extent to the country level
-        view.extent = {
-          xmin: -130,
-          ymin: 24,
-          xmax: -60,
-          ymax: 50,
-          spatialReference: { wkid: 4326 },
-        };
-
-        // Add car locations layer
+        // Add car locations layer with definition expression to load only within Hong Kong
         const carLayer = new FeatureLayer({
           url: "https://your-cartrack-api-endpoint.com/car-locations", // Replace with your actual API endpoint
           outFields: ["*"],
@@ -69,6 +75,7 @@ const MapContainer = ({ onMapViewLoad }) => {
               content: "You have {cluster_count} cars in this area.",
             },
           },
+          definitionExpression: "longitude >= 113.7 AND longitude <= 114.4 AND latitude >= 22.15 AND latitude <= 22.55", // Adjust field names as per your data
         });
 
         webMap.add(carLayer);
@@ -76,48 +83,20 @@ const MapContainer = ({ onMapViewLoad }) => {
         // Initialize the Locate widget
         const locateWidget = new Locate({
           view: view,
-          useHeadingEnabled: false,
+          useHeadingEnabled: false, // Disable heading
           goToOverride: function (view, options) {
-            options.target.scale = 1500;
+            options.target.scale = 1500; // Adjust the zoom scale as needed
             return view.goTo(options.target);
           },
         });
 
-        // Add the Locate widget to the UI
-        view.ui.add(locateWidget, "top-left");
+        // Remove all existing widgets and add only the Locate widget
+        view.ui.empty("top-left"); // Clear existing widgets
+        view.ui.add(locateWidget, "top-left"); // Add only Geolocation widget
 
         // Optionally, listen for the locate event to perform additional actions
         locateWidget.on("locate", (event) => {
           console.log("User located at: ", event.position);
-        });
-
-        // Handle cluster click to zoom into neighborhood level
-        view.on("click", async (event) => {
-          const response = await view.hitTest(event);
-          const results = response.results.filter(
-            (result) => result.graphic.layer === carLayer
-          );
-
-          if (results.length > 0) {
-            const graphic = results[0].graphic;
-
-            if (graphic.attributes.cluster_count) {
-              // It's a cluster
-              const centroid = graphic.geometry.centroid;
-              view.goTo({
-                center: centroid,
-                zoom: view.zoom + 2, // Adjust zoom level as needed
-              });
-            } else {
-              // It's an individual feature
-              // Optionally, open a popup or perform other actions
-              view.popup.open({
-                title: graphic.attributes.car_id,
-                content: graphic.attributes.location,
-                location: graphic.geometry,
-              });
-            }
-          }
         });
       } catch (err) {
         console.error("Error initializing MapView:", err);

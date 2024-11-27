@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import Locate from "@arcgis/core/widgets/Locate";
+import Compass from "@arcgis/core/widgets/Compass";
 import PropTypes from "prop-types";
 import "./SceneContainer.css";
 
@@ -16,8 +16,18 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
 
+  // Define Hong Kong extent in WGS84
+  const hongKongExtent = {
+    xmin: 113.7,
+    ymin: 22.15,
+    xmax: 114.4,
+    ymax: 22.55,
+    spatialReference: { wkid: 4326 },
+  };
+
   useEffect(() => {
     let view;
+    let cameraWatchHandle;
 
     const initializeScene = async () => {
       try {
@@ -32,11 +42,18 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
         view = new SceneView({
           container: sceneRef.current,
           map: webScene,
+          constraints: {
+            geometry: hongKongExtent,
+            rotationEnabled: false,
+            minScale: 500000, // Adjust as needed
+            maxScale: 1000,    // Adjust as needed
+          },
+          extent: hongKongExtent, // Set initial extent to Hong Kong
           camera: {
             position: [
-              -98.5795, // Longitude
-              39.8283, // Latitude
-              10000, // Elevation in meters
+              114.1, // Longitude
+              22.3,  // Latitude
+              1000,  // Elevation in meters (closer view)
             ],
             tilt: 0,
             heading: 0,
@@ -59,37 +76,7 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
           onSceneViewLoad(view);
         }
 
-        // Optionally, set the extent to the country level
-        view.extent = {
-          xmin: -130, // Example min longitude
-          ymin: 24, // Example min latitude
-          xmax: -60, // Example max longitude
-          ymax: 50, // Example max latitude
-          spatialReference: { wkid: 4326 },
-        };
-
-        // Decrease the Field of View (FOV) to 15 degrees for a more zoomed-in perspective
-        view.camera.fov = 15;
-
-        // Add the Locate widget
-        const locateWidget = new Locate({
-          view: view,
-          useHeadingEnabled: false, // Disable heading
-          goToOverride: function (view, options) {
-            options.target.scale = 1500; // Adjust the zoom scale as needed
-            return view.goTo(options.target);
-          },
-        });
-
-        // Add the Locate widget to the UI
-        view.ui.add(locateWidget, "top-left");
-
-        // Listen for the locate event to perform additional actions
-        locateWidget.on("locate", (event) => {
-          console.log("User located at: ", event.position);
-        });
-
-        // Add car locations layer with clustering
+        // Add car locations layer with definition expression to load only within Hong Kong
         const carLayer = new FeatureLayer({
           url: "https://your-cartrack-api-endpoint.com/car-locations", // Replace with your actual API endpoint
           outFields: ["*"],
@@ -106,10 +93,19 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
               content: "You have {cluster_count} cars in this area.",
             },
           },
+          definitionExpression: "longitude >= 113.7 AND longitude <= 114.4 AND latitude >= 22.15 AND latitude <= 22.55", // Adjust field names as per your data
         });
 
-        // Add the FeatureLayer to the WebScene
         webScene.add(carLayer);
+
+        // Initialize the Compass widget
+        const compassWidget = new Compass({
+          view: view,
+        });
+
+        // Remove all existing widgets and add only the Compass widget
+        view.ui.empty("top-right"); // Clear existing widgets
+        view.ui.add(compassWidget, "top-right"); // Add only Compass widget
 
         // Handle cluster click to zoom into neighborhood level
         view.on("click", async (event) => {
@@ -140,11 +136,20 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
           }
         });
 
-        // Listen for camera changes to synchronize with the map
-        view.watch("camera", (newCamera) => {
-          if (onCameraChange) {
-            onCameraChange(newCamera);
+        // Debounce camera changes to optimize performance
+        let debounceTimeout;
+        const debounceDelay = 300; // milliseconds
+
+        // Watch for camera changes and debounce the callback
+        cameraWatchHandle = view.watch("camera", (newCamera) => {
+          if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
           }
+          debounceTimeout = setTimeout(() => {
+            if (onCameraChange) {
+              onCameraChange(newCamera);
+            }
+          }, debounceDelay);
         });
       } catch (err) {
         console.error("Error initializing SceneView:", err);
@@ -159,6 +164,9 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
     return () => {
       if (view) {
         view.destroy();
+      }
+      if (cameraWatchHandle) {
+        cameraWatchHandle.remove();
       }
     };
   }, [onSceneViewLoad, onCameraChange]);
