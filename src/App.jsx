@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import About from "./components/About";
 import NotFound from "./components/NotFound";
-import MapSceneToggle from "./components/MapSceneToggle";
+import MapSceneToggle from "./components/Map/MapSceneToggle";
 import Footer from "./components/Footer/Footer"; // Import Footer component
 import Header from "./components/Header/Header"; // Import Header component if needed
 import "./app.css";
