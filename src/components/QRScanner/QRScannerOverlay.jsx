@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import "./QRScannerOverlay.css";
-import { Html5Qrcode } from "html5-qrcode";
+import React, { useEffect } from 'react';
+import './QRScannerOverlay.css';
+import { Html5Qrcode } from 'html5-qrcode';
 
 const QRScannerOverlay = ({ isOpen, onClose }) => {
   useEffect(() => {

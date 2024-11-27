@@ -1,6 +1,6 @@
 // src/components/MapComponent.jsx
 
-import React, { useRef, useState }, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { initializeMap } from "../services/arcgis";
 import "./MapComponent.css"; // Create appropriate CSS for map container
 

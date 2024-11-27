@@ -1,5 +1,5 @@
-import React, { useRef, useState }, { useState, useEffect } from "react";
-import "./DetailsSection.css";
+import React, { useState, useEffect } from 'react';
+import './DetailsSection.css';
 
 const DetailsSection = ({
   selectedVehicle,

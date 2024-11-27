@@ -1,6 +1,6 @@
 // src/components/InteractiveMap.jsx
 
-import React, { useRef, useState }, { useState } from "react";
+import React, { useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import DraggableMarker from "./DraggableMarker";
 import StaticMarker from "./StaticMarker"; // To be created

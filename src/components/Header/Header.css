@@ -1,44 +1,44 @@
 /* src/components/Header/Header.css */
 
-/* Header Container */
 header {
+  background-color: #f8f9fa; /* Light gray background */
+  padding: 10px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background-color: #f8f8f8;
-  padding: 1rem 2rem;
-  border-bottom: 1px solid #e0e0e0;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Header Title */
-header h1 {
-  font-size: 1.5rem;
-  color: #1a73e8;
-}
-
-/* Navigation Links */
-nav a {
-  margin: 0 0.5rem;
-  font-size: 1rem;
-  color: #333333;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-nav a:hover {
-  color: #1a73e8;
-  text-decoration: underline;
-}
-
-nav {
+.toggle-container {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
-nav a {
-  margin-left: 1rem;
+.toggle-base {
+  width: 100px;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  margin-right: 10px;
 }
 
-nav a:first-child {
-  margin-left: 0;
+.toggle-button {
+  padding: 5px 15px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.toggle-button.active {
+  background-color: #007bff; /* Blue background when active */
+  color: #fff;
+  border-radius: 15px;
+}
+
+.toggle-button:not(.active):hover {
+  background-color: #dcdcdc;
+  border-radius: 15px;
 }

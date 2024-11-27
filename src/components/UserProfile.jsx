@@ -1,6 +1,6 @@
 // src/components/UserProfile.jsx
 
-import React, { useRef, useState }, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { createApplicant, getVerificationStatus } from "../services/sumsub";
 

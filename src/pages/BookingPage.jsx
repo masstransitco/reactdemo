@@ -1,6 +1,6 @@
 // src/pages/BookingPage.jsx
 
-import React, { useRef, useState }, { useState } from "react";
+import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "axios";
 
