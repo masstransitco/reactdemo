@@ -1,7 +1,7 @@
-// src/components/MapSceneToggle.jsx
+// src/components/Map/MapSceneToggle.jsx
 
 import React, { useState, useRef } from "react";
-import MapContainer from "./Map/MapContainer";
+import MapContainer from "./MapContainer";
 import SceneContainer from "./Scene/SceneContainer";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
