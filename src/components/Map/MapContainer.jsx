@@ -1,7 +1,7 @@
 // src/components/Map/MapContainer.jsx
 
 import React, { useEffect, useRef } from "react";
-import Map from "@arcgis/core/Map";
+import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Locate from "@arcgis/core/widgets/Locate";
@@ -11,6 +11,8 @@ import "./MapContainer.css";
 // Import ArcGIS CSS
 import "@arcgis/core/assets/esri/themes/light/main.css";
 
+const [isLoading, setIsLoading] = useState(true);
+
 const MapContainer = ({ onMapViewLoad }) => {
   const mapRef = useRef(null);
 
@@ -18,19 +20,17 @@ const MapContainer = ({ onMapViewLoad }) => {
     let view;
 
     const initializeMap = async () => {
-      const map = new Map({
-        basemap: "streets-navigation-vector",
+      // Initialize WebMap with your specific Item ID
+      const webMap = new WebMap({
+        portalItem: {
+          id: "2e977a0d176b4bb582b9d4d643dfcc4d", // Your 2D Web Map ID
+        },
       });
 
       view = new MapView({
         container: mapRef.current,
-        map: map,
-        // Replace with initial center coordinates [longitude, latitude]
-        center: [
-          -98.5795, // Example longitude: Geographic center of the contiguous United States
-          39.8283, // Example latitude
-        ],
-        zoom: 6, // Initial zoom level; adjust as needed
+        map: webMap,
+        // Optionally, set additional properties like center and zoom
       });
 
       await view.when();
@@ -40,13 +40,13 @@ const MapContainer = ({ onMapViewLoad }) => {
         onMapViewLoad(view);
       }
 
-      // Set the extent to the country level
+      // Optionally, set the extent to the country level
       view.extent = {
-        xmin: -130, // Example min longitude
-        ymin: 24, // Example min latitude
-        xmax: -60, // Example max longitude
-        ymax: 50, // Example max latitude
-        spatialReference: { wkid: 4326 }, // Fixed extra space
+        xmin: -130,
+        ymin: 24,
+        xmax: -60,
+        ymax: 50,
+        spatialReference: { wkid: 4326 },
       };
 
       // Add car locations layer
@@ -68,16 +68,16 @@ const MapContainer = ({ onMapViewLoad }) => {
         },
       });
 
-      map.add(carLayer);
+      webMap.add(carLayer);
 
       // Initialize the Locate widget
       const locateWidget = new Locate({
         view: view,
-        useHeadingEnabled: false, // Disable heading
+        useHeadingEnabled: false,
         goToOverride: function (view, options) {
-          options.target.scale = 1500; // Adjust the zoom scale as needed
+          options.target.scale = 1500;
           return view.goTo(options.target);
-        }, // Removed extra spaces
+        },
       });
 
       // Add the Locate widget to the UI
