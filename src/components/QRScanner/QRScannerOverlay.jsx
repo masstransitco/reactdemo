@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import './QRScannerOverlay.css';
-import { Html5Qrcode } from 'html5-qrcode';
+import React, { useEffect } from "react";
+import "./QRScannerOverlay.css";
+import { Html5Qrcode } from "html5-qrcode";
 
 const QRScannerOverlay = ({ isOpen, onClose }) => {
   useEffect(() => {
@@ -17,22 +17,23 @@ const QRScannerOverlay = ({ isOpen, onClose }) => {
 
       const config = { fps: 10, qrbox: 250 };
 
-      html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        qrCodeSuccessCallback
-      ).catch(err => {
-        console.error(`Unable to start scanning, error: ${err}`);
-      });
+      html5QrCode
+        .start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+        .catch((err) => {
+          console.error(`Unable to start scanning, error: ${err}`);
+        });
     }
 
     return () => {
       if (html5QrCode) {
-        html5QrCode.stop().then(() => {
-          html5QrCode.clear();
-        }).catch(err => {
-          console.error('Failed to stop QR scanner:', err);
-        });
+        html5QrCode
+          .stop()
+          .then(() => {
+            html5QrCode.clear();
+          })
+          .catch((err) => {
+            console.error("Failed to stop QR scanner:", err);
+          });
       }
     };
   }, [isOpen, onClose]);
@@ -42,7 +43,9 @@ const QRScannerOverlay = ({ isOpen, onClose }) => {
   return (
     <div className="qr-scanner-overlay">
       <div className="qr-scanner-container">
-        <button className="close-btn" onClick={onClose}>&times;</button>
+        <button className="close-btn" onClick={onClose}>
+          &times;
+        </button>
         <div id="qr-reader"></div>
       </div>
     </div>

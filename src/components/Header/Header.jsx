@@ -4,7 +4,8 @@ import React, { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 import "./Header.css";
 
-const Header = ({ onToggleScene }) => { // Receive the toggle function as a prop
+const Header = ({ onToggleScene }) => {
+  // Receive the toggle function as a prop
   const { currentMarkerType, setCurrentMarkerType } = useContext(AppContext);
 
   const handleToggle = (type) => {
@@ -33,7 +34,7 @@ const Header = ({ onToggleScene }) => { // Receive the toggle function as a prop
         </button>
       </div>
       <button className="scene-toggle-button" onClick={onToggleScene}>
-        { /* You can use an icon here */ }
+        {/* You can use an icon here */}
         Toggle Scene
       </button>
     </header>

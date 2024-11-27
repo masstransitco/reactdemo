@@ -87,8 +87,7 @@ const SceneContainer = ({
 
         // Add car locations layer with definition expression to load only within Hong Kong
         const carLayerInstance = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/a66edb1852cc43a2825097835dad7a46/arcgis/rest/services/Stations/FeatureServer/0", // Replace with actual URL
+          url: "https://services.arcgis.com/a66edb1852cc43a2825097835dad7a46/arcgis/rest/services/Stations/FeatureServer/0", // Replace with actual URL
           outFields: ["Station_ID", "Station_Name", "Location"], // Specify needed fields
           popupTemplate: {
             title: "Station: {Station_Name}", // Adjust field names as per data
@@ -211,23 +210,25 @@ const SceneContainer = ({
       };
 
       // Highlight selected station
-      carLayer.queryFeatures({
-        where: `Station_ID = '${selectedStation.id}'`,
-        outFields: ["*"],
-      }).then((result) => {
-        result.features.forEach((graphic) => {
-          graphic.symbol = {
-            type: "simple-marker",
-            color: "blue",
-            outline: {
-              color: "#FFFFFF",
-              width: 1,
-            },
-            size: 10,
-          };
+      carLayer
+        .queryFeatures({
+          where: `Station_ID = '${selectedStation.id}'`,
+          outFields: ["*"],
+        })
+        .then((result) => {
+          result.features.forEach((graphic) => {
+            graphic.symbol = {
+              type: "simple-marker",
+              color: "blue",
+              outline: {
+                color: "#FFFFFF",
+                width: 1,
+              },
+              size: 10,
+            };
+          });
+          carLayer.refresh();
         });
-        carLayer.refresh();
-      });
 
       // Pan camera to selected station
       const { location } = selectedStation; // geometry object
@@ -255,32 +256,30 @@ const SceneContainer = ({
       };
 
       // Reset symbols of all graphics
-      carLayer.queryFeatures({
-        where: "1=1",
-        outFields: ["*"],
-      }).then((result) => {
-        result.features.forEach((graphic) => {
-          graphic.symbol = {
-            type: "simple-marker",
-            color: "#555555",
-            outline: {
-              color: "#FFFFFF",
-              width: 1,
-            },
-            size: 6,
-          };
+      carLayer
+        .queryFeatures({
+          where: "1=1",
+          outFields: ["*"],
+        })
+        .then((result) => {
+          result.features.forEach((graphic) => {
+            graphic.symbol = {
+              type: "simple-marker",
+              color: "#555555",
+              outline: {
+                color: "#FFFFFF",
+                width: 1,
+              },
+              size: 6,
+            };
+          });
+          carLayer.refresh();
         });
-        carLayer.refresh();
-      });
     }
   }, [selectedStation, carLayer]);
 
   return (
-    <div
-      className={`scene-container ${
-        isVisible ? "visible" : "hidden"
-      }`}
-    >
+    <div className={`scene-container ${isVisible ? "visible" : "hidden"}`}>
       {error ? (
         <div className="error-message">{error}</div>
       ) : (

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import './SketchfabEmbed.css';
+import React, { useEffect } from "react";
+import "./SketchfabEmbed.css";
 
 const SketchfabEmbed = () => {
   useEffect(() => {

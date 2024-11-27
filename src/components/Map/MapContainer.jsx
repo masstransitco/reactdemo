@@ -198,23 +198,25 @@ const MapContainer = ({ onMapViewLoad, onStationSelect, selectedStation }) => {
       };
 
       // Highlight selected station
-      carLayer.queryFeatures({
-        where: `Station_ID = '${selectedStation.id}'`,
-        outFields: ["*"],
-      }).then((result) => {
-        result.features.forEach((graphic) => {
-          graphic.symbol = {
-            type: "simple-marker",
-            color: "blue",
-            outline: {
-              color: "#FFFFFF",
-              width: 1,
-            },
-            size: 10,
-          };
+      carLayer
+        .queryFeatures({
+          where: `Station_ID = '${selectedStation.id}'`,
+          outFields: ["*"],
+        })
+        .then((result) => {
+          result.features.forEach((graphic) => {
+            graphic.symbol = {
+              type: "simple-marker",
+              color: "blue",
+              outline: {
+                color: "#FFFFFF",
+                width: 1,
+              },
+              size: 10,
+            };
+          });
+          carLayer.refresh();
         });
-        carLayer.refresh();
-      });
 
       // Pan camera to selected station
       const { location } = selectedStation; // geometry object
@@ -242,23 +244,25 @@ const MapContainer = ({ onMapViewLoad, onStationSelect, selectedStation }) => {
       };
 
       // Reset symbols of all graphics
-      carLayer.queryFeatures({
-        where: "1=1",
-        outFields: ["*"],
-      }).then((result) => {
-        result.features.forEach((graphic) => {
-          graphic.symbol = {
-            type: "simple-marker",
-            color: "#FF0000",
-            outline: {
-              color: "#FFFFFF",
-              width: 1,
-            },
-            size: 8,
-          };
+      carLayer
+        .queryFeatures({
+          where: "1=1",
+          outFields: ["*"],
+        })
+        .then((result) => {
+          result.features.forEach((graphic) => {
+            graphic.symbol = {
+              type: "simple-marker",
+              color: "#FF0000",
+              outline: {
+                color: "#FFFFFF",
+                width: 1,
+              },
+              size: 8,
+            };
+          });
+          carLayer.refresh();
         });
-        carLayer.refresh();
-      });
     }
   }, [selectedStation, carLayer]);
 

@@ -42,7 +42,8 @@ const MapSceneToggle = () => {
 
   return (
     <div className="map-scene-toggle">
-      <Header onToggleScene={toggleSceneVisibility} /> {/* Pass toggle function */}
+      <Header onToggleScene={toggleSceneVisibility} />{" "}
+      {/* Pass toggle function */}
       <MapContainer
         onMapViewLoad={handleMapViewLoad}
         onStationSelect={handleStationSelect}

@@ -46,7 +46,7 @@
   font-size: 2rem;
   font-weight: bold;
   color: #fff;
-  text-shadow: 0 0 10px #276EF1; /* Illuminating effect */
+  text-shadow: 0 0 10px #276ef1; /* Illuminating effect */
   line-height: 1;
   display: block; /* Ensure it occupies its own line */
 }
@@ -54,7 +54,7 @@
 .route-info .unit {
   font-size: 1rem;
   color: #fff;
-  text-shadow: 0 0 10px #276EF1; /* Illuminating effect */
+  text-shadow: 0 0 10px #276ef1; /* Illuminating effect */
   line-height: 1;
 }
 
@@ -82,8 +82,9 @@
   transition: opacity 0.3s ease;
 }
 
-.choose-destination-btn, .pay-as-you-go-btn {
-  background-color: #276EF1; /* Uber blue */
+.choose-destination-btn,
+.pay-as-you-go-btn {
+  background-color: #276ef1; /* Uber blue */
   color: #fff;
   padding: 10px 20px;
   font-size: 1rem;
@@ -97,11 +98,14 @@
 }
 
 .pay-as-you-go-btn {
-  background-color: #C7C7CC; /* Uber gray */
+  background-color: #c7c7cc; /* Uber gray */
   color: #000;
 }
 
-.choose-destination-btn:hover, .pay-as-you-go-btn:hover, .lock-btn:hover, .unlock-btn:hover {
+.choose-destination-btn:hover,
+.pay-as-you-go-btn:hover,
+.lock-btn:hover,
+.unlock-btn:hover {
   opacity: 0.8;
 }
 
@@ -150,7 +154,8 @@
     flex-direction: column;
   }
 
-  .items-list, .right-container {
+  .items-list,
+  .right-container {
     width: 100%;
   }
 
@@ -158,7 +163,8 @@
     font-size: 0.9rem;
   }
 
-  .choose-destination-btn, .pay-as-you-go-btn {
+  .choose-destination-btn,
+  .pay-as-you-go-btn {
     display: none; /* Adjust display as needed */
   }
 }

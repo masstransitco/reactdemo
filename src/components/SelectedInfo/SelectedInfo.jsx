@@ -1,5 +1,5 @@
-import React from 'react';
-import './SelectedInfo.css';
+import React from "react";
+import "./SelectedInfo.css";
 
 const SelectedInfo = () => {
   return (

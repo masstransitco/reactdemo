@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import './DetailsSection.css';
+import React, { useState, useEffect } from "react";
+import "./DetailsSection.css";
 
 const DetailsSection = ({
   selectedVehicle,
@@ -48,12 +48,25 @@ const DetailsSection = ({
       <div className="details-container">
         <div className="items-list">
           <ul id="vehicleDetails">
-            <li><strong>Registration:</strong> {selectedVehicle.registration}</li>
-            <li><strong>Model:</strong> {selectedVehicle.model}</li>
-            <li><strong>Status:</strong> {selectedVehicle.systemStatus ? 'Active' : 'Inactive'}</li>
-            <li><strong>Battery Level:</strong> {selectedVehicle.batteryLevel}%</li>
-            <li><strong>Door Status:</strong> {selectedVehicle.doorStatus}</li>
-            <li><strong>Last Active:</strong> {selectedVehicle.lastActiveTime}</li>
+            <li>
+              <strong>Registration:</strong> {selectedVehicle.registration}
+            </li>
+            <li>
+              <strong>Model:</strong> {selectedVehicle.model}
+            </li>
+            <li>
+              <strong>Status:</strong>{" "}
+              {selectedVehicle.systemStatus ? "Active" : "Inactive"}
+            </li>
+            <li>
+              <strong>Battery Level:</strong> {selectedVehicle.batteryLevel}%
+            </li>
+            <li>
+              <strong>Door Status:</strong> {selectedVehicle.doorStatus}
+            </li>
+            <li>
+              <strong>Last Active:</strong> {selectedVehicle.lastActiveTime}
+            </li>
           </ul>
           {walkingTime && (
             <div className="route-info" id="routeInfo">
@@ -63,23 +76,30 @@ const DetailsSection = ({
           )}
           {routeDetails && (
             <>
-              <div className="route-details-toggle" id="routeToggle" onClick={toggleRouteDetails}>
+              <div
+                className="route-details-toggle"
+                id="routeToggle"
+                onClick={toggleRouteDetails}
+              >
                 <span id="toggleText">
-                  {showRouteDetails ? 'Close route details' : 'Route details'}
+                  {showRouteDetails ? "Close route details" : "Route details"}
                 </span>
               </div>
               {showRouteDetails && (
                 <div className="route-details" id="routeDetails">
                   {routeDetails.map((step, index) => (
                     <div key={index}>
-                      <strong>Step {index + 1}:</strong> <span dangerouslySetInnerHTML={{ __html: step.instructions }} />
+                      <strong>Step {index + 1}:</strong>{" "}
+                      <span
+                        dangerouslySetInnerHTML={{ __html: step.instructions }}
+                      />
                     </div>
                   ))}
                 </div>
               )}
             </>
           )}
-          <div className="button-group" style={{ display: 'flex' }}>
+          <div className="button-group" style={{ display: "flex" }}>
             <button
               id="lockButton"
               className="lock-btn"
