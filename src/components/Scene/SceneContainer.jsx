@@ -35,8 +35,8 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
           camera: {
             position: [
               -98.5795, // Longitude
-              39.8283,  // Latitude
-              10000,    // Elevation in meters
+              39.8283, // Latitude
+              10000, // Elevation in meters
             ],
             tilt: 0,
             heading: 0,
@@ -62,9 +62,9 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
         // Optionally, set the extent to the country level
         view.extent = {
           xmin: -130, // Example min longitude
-          ymin: 24,   // Example min latitude
-          xmax: -60,  // Example max longitude
-          ymax: 50,   // Example max latitude
+          ymin: 24, // Example min latitude
+          xmax: -60, // Example max longitude
+          ymax: 50, // Example max latitude
           spatialReference: { wkid: 4326 },
         };
 
