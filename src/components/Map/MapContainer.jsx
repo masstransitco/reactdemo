@@ -64,7 +64,7 @@ const MapContainer = ({ onMapViewLoad, onStationSelect, selectedStation }) => {
 
         // Add car locations layer with definition expression to load only within Hong Kong
         const carLayerInstance = new FeatureLayer({
-          url: "https://services.arcgis.com/a66edb1852cc43a2825097835dad7a46/arcgis/rest/services/Stations/FeatureServer/0", // Replace with actual URL
+          url: "https://services.arcgis.com/a66edb1852cc43a2825097835dad7a46/arcgis/rest/services/Stations/FeatureServer", // Replace with actual URL
           outFields: ["Station_ID", "Station_Name", "Location"], // Specify needed fields
           popupTemplate: {
             title: "Station: {Station_Name}", // Adjust field names as per data
