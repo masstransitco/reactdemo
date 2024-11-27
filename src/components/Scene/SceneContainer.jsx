@@ -46,14 +46,14 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
             geometry: hongKongExtent,
             rotationEnabled: false,
             minScale: 500000, // Adjust as needed
-            maxScale: 1000,    // Adjust as needed
+            maxScale: 1000, // Adjust as needed
           },
           extent: hongKongExtent, // Set initial extent to Hong Kong
           camera: {
             position: [
               114.1, // Longitude
-              22.3,  // Latitude
-              1000,  // Elevation in meters (closer view)
+              22.3, // Latitude
+              1000, // Elevation in meters (closer view)
             ],
             tilt: 0,
             heading: 0,
@@ -93,7 +93,8 @@ const SceneContainer = ({ onSceneViewLoad, onCameraChange }) => {
               content: "You have {cluster_count} cars in this area.",
             },
           },
-          definitionExpression: "longitude >= 113.7 AND longitude <= 114.4 AND latitude >= 22.15 AND latitude <= 22.55", // Adjust field names as per your data
+          definitionExpression:
+            "longitude >= 113.7 AND longitude <= 114.4 AND latitude >= 22.15 AND latitude <= 22.55", // Adjust field names as per your data
         });
 
         webScene.add(carLayer);
