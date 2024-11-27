@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import MapContainer from "./MapContainer";
-import SceneContainer from "./Scene/SceneContainer";
+import SceneContainer from "./src/components/Scene/SceneContainer";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import "./MapSceneToggle.css";
