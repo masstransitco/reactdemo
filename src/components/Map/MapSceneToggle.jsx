@@ -1,11 +1,11 @@
 // src/components/Map/MapSceneToggle.jsx
 
 import React, { useState, useRef } from "react";
-import MapContainer from "./src/components/Map/MapContainer";
-import SceneContainer from "./src/components/Scene/SceneContainer";
-import Header from "./src/components/Header/Header";
-import Footer from "./src/components/Footer/Footer";
-import "./src/components/Map/MapSceneToggle.css";
+import MapContainer from "./MapContainer"; // Correct relative path
+import SceneContainer from "./SceneContainer"; // Now in the same directory
+import Header from "../Header/Header"; // Navigate up one level to Header
+import Footer from "../Footer/Footer"; // Navigate up one level to Footer
+import "./MapSceneToggle.css"; // Correct relative path
 
 const MapSceneToggle = () => {
   const [selectedStation, setSelectedStation] = useState(null);
