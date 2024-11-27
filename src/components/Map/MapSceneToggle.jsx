@@ -1,11 +1,11 @@
 // src/components/Map/MapSceneToggle.jsx
 
 import React, { useState, useRef } from "react";
-import MapContainer from "./MapContainer";
+import MapContainer from "./src/components/Map/MapContainer";
 import SceneContainer from "./src/components/Scene/SceneContainer";
 import Header from "./src/components/Header/Header";
-import Footer from ".src/compopnents/Footer/Footer";
-import "./MapSceneToggle.css";
+import Footer from "./src/components/Footer/Footer";
+import "./src/components/Map/MapSceneToggle.css";
 
 const MapSceneToggle = () => {
   const [selectedStation, setSelectedStation] = useState(null);
