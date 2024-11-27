@@ -3,13 +3,9 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
-import MapContainer from "./components/Map/MapContainer";
-import SceneContainer from "./components/Scene/SceneContainer"
 import About from "./components/About";
 import NotFound from "./components/NotFound";
 import MapSceneToggle from "./components/Map/MapSceneToggle";
-import Footer from "./components/Footer/Footer"; // Import Footer component
-import Header from "./components/Header/Header"; // Import Header component if needed
 import "./app.css";
 import debounce from "lodash.debounce"; // Ensure lodash.debounce is installed
 
