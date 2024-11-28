@@ -28,7 +28,7 @@ const MapContainer = ({ onMapViewLoad }) => {
   const { selectedStation, setSelectedStation } = useContext(AppContext);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
-  const [ setUserLocation] = useState(null); // State to store user location
+  const [setUserLocation] = useState(null); // State to store user location
 
   useEffect(() => {
     let view;
