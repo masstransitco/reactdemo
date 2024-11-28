@@ -1,19 +1,20 @@
 // src/components/Map/MapSceneToggle.jsx
 
-import React, { useState, useRef } from "react";
+import React, { useContext } from "react";
 import MapContainer from "./MapContainer";
 import SceneContainer from "./SceneContainer";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import "./MapSceneToggle.css";
+import { AppContext } from "../../context/AppContext";
 
 const MapSceneToggle = () => {
-  const [selectedStation, setSelectedStation] = useState(null);
+  const { selectedStation, setSelectedStation } = useContext(AppContext);
   const [isSceneVisible, setIsSceneVisible] = useState(false); // Visibility state
   const mapViewRef = useRef(null);
   const sceneViewRef = useRef(null);
 
-  // Callback when a station is selected in the MapContainer or SceneContainer
+  // Callback when a station is selected in the MapContainer
   const handleStationSelect = (station) => {
     setSelectedStation(station);
     setIsSceneVisible(true); // Show the SceneContainer when a station is selected
@@ -41,13 +42,10 @@ const MapSceneToggle = () => {
       <MapContainer
         onMapViewLoad={handleMapViewLoad}
         onStationSelect={handleStationSelect}
-        selectedStation={selectedStation}
       />
       {isSceneVisible && (
         <SceneContainer
           onSceneViewLoad={handleSceneViewLoad}
-          selectedStation={selectedStation}
-          onStationSelect={handleStationSelect}
           onSidebarMinimize={handleSidebarMinimize}
           isVisible={isSceneVisible} // Pass visibility prop
         />

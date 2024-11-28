@@ -1,15 +1,16 @@
-// src/context/AppContext.jsx
-
-import React, { createContext, useState } from "react";
-import PropTypes from "prop-types";
-
-export const AppContext = createContext();
-
 export const AppProvider = ({ children }) => {
   const [currentMarkerType, setCurrentMarkerType] = useState("Cars");
+  const [selectedStation, setSelectedStation] = useState(null);
 
   return (
-    <AppContext.Provider value={{ currentMarkerType, setCurrentMarkerType }}>
+    <AppContext.Provider
+      value={{
+        currentMarkerType,
+        setCurrentMarkerType,
+        selectedStation,
+        setSelectedStation,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

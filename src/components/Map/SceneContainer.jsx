@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Compass from "@arcgis/core/widgets/Compass";
 import PropTypes from "prop-types";
 import "./SceneContainer.css";
@@ -14,33 +13,31 @@ import "@arcgis/core/assets/esri/themes/light/main.css";
 const SceneContainer = ({
   onSceneViewLoad,
   selectedStation,
-  onStationSelect,
   onSidebarMinimize,
-  isVisible, // New prop to control visibility
+  isVisible, // Controls visibility
 }) => {
   const sceneRef = useRef(null);
   const viewRef = useRef(null); // To store SceneView instance
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
-  const [carLayer, setCarLayer] = useState(null); // Reference to car layer
 
-  // Define Hong Kong extent in WGS84
-  const hongKongExtent = {
+  // Define Hong Kong extent in WGS84 as an actual Extent object
+  const HONG_KONG_EXTENT = new __esri.Extent({
     xmin: 113.7,
     ymin: 22.15,
     xmax: 114.4,
     ymax: 22.55,
     spatialReference: { wkid: 4326 },
-  };
+  });
 
   // Initialization Effect
   useEffect(() => {
     const initializeScene = async () => {
       try {
-        // Initialize WebScene with your specific Web Scene ID
+        // Initialize WebScene with the provided 3D Web Scene ID
         const webScene = new WebScene({
           portalItem: {
-            id: "4304b6c3b2084330b4a2153da9fbbcf0", // Your 3D Web Scene ID
+            id: "4304b6c3b2084330b4a2153da9fbbcf0", // 3D Scene ID
           },
         });
 
@@ -48,23 +45,14 @@ const SceneContainer = ({
           container: sceneRef.current,
           map: webScene,
           constraints: {
-            geometry: hongKongExtent,
+            geometry: HONG_KONG_EXTENT, // Use the Extent object
             rotationEnabled: false,
             tiltEnabled: false,
             zoomEnabled: true,
             minScale: 500000, // Adjust as needed
             maxScale: 1000, // Adjust as needed
           },
-          extent: hongKongExtent, // Set initial extent to Hong Kong
-          camera: {
-            position: [
-              114.1, // Longitude
-              22.3, // Latitude
-              1000, // Elevation in meters (closer view)
-            ],
-            tilt: 0,
-            heading: 0,
-          },
+          extent: HONG_KONG_EXTENT, // Set initial extent to Hong Kong
           environment: {
             lighting: {
               date: new Date(),
@@ -85,42 +73,6 @@ const SceneContainer = ({
           onSceneViewLoad(view);
         }
 
-        // Add car locations layer with definition expression to load only within Hong Kong
-        const carLayerInstance = new FeatureLayer({
-          url: "https://services.arcgis.com/a66edb1852cc43a2825097835dad7a46/arcgis/rest/services/Stations/FeatureServer/0", // Replace with actual URL
-          outFields: ["Station_ID", "Station_Name", "Location"], // Specify needed fields
-          popupTemplate: {
-            title: "Station: {Station_Name}", // Adjust field names as per data
-            content: "Station ID: {Station_ID}<br>Location: {Location}",
-          },
-          // Enable clustering if desired
-          featureReduction: {
-            type: "cluster",
-            clusterRadius: "100px",
-            popupTemplate: {
-              title: "Cluster Summary",
-              content: "You have {cluster_count} stations in this area.",
-            },
-          },
-          definitionExpression:
-            "longitude >= 113.7 AND longitude <= 114.4 AND latitude >= 22.15 AND latitude <= 22.55", // Adjust field names as per your data
-          renderer: {
-            type: "simple",
-            symbol: {
-              type: "simple-marker",
-              color: "#555555", // Gray color for other stations
-              outline: {
-                color: "#FFFFFF",
-                width: 1,
-              },
-              size: 6,
-            },
-          },
-        });
-
-        webScene.add(carLayerInstance);
-        setCarLayer(carLayerInstance);
-
         // Initialize the Compass widget
         const compassWidget = new Compass({
           view: view,
@@ -130,37 +82,8 @@ const SceneContainer = ({
         view.ui.empty("top-right"); // Clear existing widgets
         view.ui.add(compassWidget, "top-right"); // Add only Compass widget
 
-        // Handle cluster click to zoom into neighborhood level
-        view.on("click", async (event) => {
-          const response = await view.hitTest(event);
-          const results = response.results.filter(
-            (result) => result.graphic.layer === carLayerInstance
-          );
-
-          if (results.length > 0) {
-            const graphic = results[0].graphic;
-
-            if (graphic.attributes.cluster_count) {
-              // It's a cluster
-              const centroid = graphic.geometry.centroid;
-              view.goTo({
-                center: centroid,
-                zoom: view.zoom + 2, // Adjust zoom level as needed
-              });
-            } else {
-              // It's an individual feature
-              // Notify parent of selection
-              const stationData = {
-                id: graphic.attributes.Station_ID, // Adjust field names
-                name: graphic.attributes.Station_Name,
-                location: graphic.geometry, // Geometry object
-              };
-              if (onStationSelect) {
-                onStationSelect(stationData);
-              }
-            }
-          }
-        });
+        // Manage slides after the WebScene has loaded
+        manageSlides(view, webScene);
       } catch (err) {
         console.error("Error initializing SceneView:", err);
         setError("Failed to load the scene. Please try again later.");
@@ -176,107 +99,104 @@ const SceneContainer = ({
         viewRef.current.destroy();
       }
     };
-  }, [onSceneViewLoad, onStationSelect]);
+  }, [onSceneViewLoad]);
+
+  // Function to manage slides
+  const manageSlides = (view, webScene) => {
+    const slides = webScene.presentation.slides;
+
+    // Log all slides
+    slides.forEach((slide, index) => {
+      console.log(`Slide ${index + 1}: ${slide.title.text}`);
+    });
+
+    if (slides.length > 0) {
+      // Apply "Slide 1" as the initial view
+      slides
+        .getItemAt(0)
+        .applyTo(view)
+        .then(() => {
+          console.log("Camera moved to Slide 1.");
+        })
+        .catch((err) => {
+          console.error("Error applying Slide 1:", err);
+        });
+    } else {
+      console.warn("No slides found in the WebScene.");
+    }
+  };
+
+  // Function to navigate to a specific slide by index
+  const goToSlide = (slideIndex) => {
+    const slides = viewRef.current.map.presentation.slides;
+    const slide = slides.getItemAt(slideIndex);
+    if (slide) {
+      slide
+        .applyTo(viewRef.current)
+        .then(() => {
+          console.log(`Camera moved to Slide: ${slide.title.text}`);
+          setCurrentSlideIndex(slideIndex); // Update current slide index
+        })
+        .catch((err) => {
+          console.error(`Error applying Slide ${slideIndex + 1}:`, err);
+        });
+    } else {
+      console.error("Slide index out of bounds.");
+    }
+  };
+
+  // Function to navigate to the next slide
+  const nextSlide = () => {
+    const slides = viewRef.current.map.presentation.slides;
+    if (currentSlideIndex < slides.length - 1) {
+      goToSlide(currentSlideIndex + 1);
+    } else {
+      console.log("Already on the last slide.");
+    }
+  };
+
+  // Function to navigate to the previous slide
+  const prevSlide = () => {
+    if (currentSlideIndex > 0) {
+      goToSlide(currentSlideIndex - 1);
+    } else {
+      console.log("Already on the first slide.");
+    }
+  };
+
+  // State to track current slide index
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   // Effect to handle selectedStation changes
   useEffect(() => {
-    if (!carLayer) return;
+    if (!viewRef.current) return;
 
     if (selectedStation) {
-      // Update renderer to highlight selected station
-      carLayer.renderer = {
-        type: "simple",
-        symbol: {
-          type: "simple-marker",
-          color: "#555555", // Gray color for other stations
-          outline: {
-            color: "#FFFFFF",
-            width: 1,
-          },
-          size: 6,
-        },
-        visualVariables: [
-          {
-            type: "color",
-            field: "Station_ID", // Adjust field name
-            stops: [
-              {
-                value: selectedStation.id,
-                color: "blue",
-              },
-            ],
-          },
-        ],
-      };
-
-      // Highlight selected station
-      carLayer
-        .queryFeatures({
-          where: `Station_ID = '${selectedStation.id}'`,
-          outFields: ["*"],
-        })
-        .then((result) => {
-          result.features.forEach((graphic) => {
-            graphic.symbol = {
-              type: "simple-marker",
-              color: "blue",
-              outline: {
-                color: "#FFFFFF",
-                width: 1,
-              },
-              size: 10,
-            };
-          });
-          carLayer.refresh();
-        });
-
       // Pan camera to selected station
       const { location } = selectedStation; // geometry object
       if (location && viewRef.current) {
-        viewRef.current.goTo({
-          target: location,
-          zoom: 1500, // Adjust as needed
-          tilt: 0,
-          heading: 0,
-        });
-      }
-    } else {
-      // Reset renderer to default
-      carLayer.renderer = {
-        type: "simple",
-        symbol: {
-          type: "simple-marker",
-          color: "#555555", // Gray color for stations
-          outline: {
-            color: "#FFFFFF",
-            width: 1,
-          },
-          size: 6,
-        },
-      };
-
-      // Reset symbols of all graphics
-      carLayer
-        .queryFeatures({
-          where: "1=1",
-          outFields: ["*"],
-        })
-        .then((result) => {
-          result.features.forEach((graphic) => {
-            graphic.symbol = {
-              type: "simple-marker",
-              color: "#555555",
-              outline: {
-                color: "#FFFFFF",
-                width: 1,
-              },
-              size: 6,
-            };
+        viewRef.current
+          .goTo({
+            target: location,
+            zoom: 1500, // Adjust as needed
+            tilt: 0,
+            heading: 0,
+          })
+          .then(() => {
+            console.log(`Camera moved to station: ${selectedStation.name}`);
+          })
+          .catch((err) => {
+            console.error("Error panning to selected station:", err);
           });
-          carLayer.refresh();
-        });
+      }
     }
-  }, [selectedStation, carLayer]);
+
+    // Lock camera movement and navigation
+    viewRef.current.constraints.rotationEnabled = false;
+    viewRef.current.constraints.tiltEnabled = false;
+    viewRef.current.constraints.panEnabled = false;
+    viewRef.current.constraints.zoomEnabled = false;
+  }, [selectedStation]);
 
   return (
     <div className={`scene-container ${isVisible ? "visible" : "hidden"}`}>
@@ -290,7 +210,11 @@ const SceneContainer = ({
       )}
       {selectedStation && (
         <div className="sidebar">
-          <button className="minimize-button" onClick={onSidebarMinimize}>
+          <button
+            className="minimize-button"
+            onClick={onSidebarMinimize}
+            aria-label="Minimize Sidebar"
+          >
             &times;
           </button>
           <div className="station-details">
@@ -300,6 +224,28 @@ const SceneContainer = ({
           </div>
         </div>
       )}
+      {/* Optional Slide Navigation Controls */}
+      {isVisible && (
+        <div className="slide-navigation">
+          <button
+            onClick={prevSlide}
+            disabled={currentSlideIndex === 0}
+            aria-label="Previous Slide"
+          >
+            Previous Slide
+          </button>
+          <button
+            onClick={nextSlide}
+            disabled={
+              currentSlideIndex ===
+              (viewRef.current?.map.presentation.slides.length || 1) - 1
+            }
+            aria-label="Next Slide"
+          >
+            Next Slide
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -307,14 +253,14 @@ const SceneContainer = ({
 // Define PropTypes outside the component
 SceneContainer.propTypes = {
   onSceneViewLoad: PropTypes.func.isRequired,
-  onStationSelect: PropTypes.func, // Optional
   selectedStation: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired, // Geometry object
   }),
+  onStationSelect: PropTypes.func, // Optional
   onSidebarMinimize: PropTypes.func.isRequired,
-  isVisible: PropTypes.bool.isRequired, // New prop
+  isVisible: PropTypes.bool.isRequired, // New prop to control visibility
 };
 
 export default SceneContainer;

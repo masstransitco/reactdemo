@@ -13,7 +13,6 @@ import "@arcgis/core/assets/esri/themes/light/main.css";
 const SceneContainer = ({
   onSceneViewLoad,
   selectedStation,
-  onStationSelect,
   onSidebarMinimize,
   isVisible, // Controls visibility
 }) => {
@@ -22,14 +21,14 @@ const SceneContainer = ({
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
 
-  // Define Hong Kong extent in WGS84
-  const hongKongExtent = {
+  // Define Hong Kong extent in WGS84 as an actual Extent object
+  const HONG_KONG_EXTENT = new __esri.Extent({
     xmin: 113.7,
     ymin: 22.15,
     xmax: 114.4,
     ymax: 22.55,
     spatialReference: { wkid: 4326 },
-  };
+  });
 
   // Initialization Effect
   useEffect(() => {
@@ -46,15 +45,14 @@ const SceneContainer = ({
           container: sceneRef.current,
           map: webScene,
           constraints: {
-            geometry: hongKongExtent,
+            geometry: HONG_KONG_EXTENT, // Use the Extent object
             rotationEnabled: false,
             tiltEnabled: false,
             zoomEnabled: true,
             minScale: 500000, // Adjust as needed
             maxScale: 1000, // Adjust as needed
           },
-          extent: hongKongExtent, // Set initial extent to Hong Kong
-          // Remove the camera property to allow slides to control the view
+          extent: HONG_KONG_EXTENT, // Set initial extent to Hong Kong
           environment: {
             lighting: {
               date: new Date(),
@@ -114,36 +112,60 @@ const SceneContainer = ({
 
     if (slides.length > 0) {
       // Apply "Slide 1" as the initial view
-      slides.getItemAt(0).applyTo(view).then(() => {
-        console.log("Camera moved to Slide 1.");
-      }).catch((err) => {
-        console.error("Error applying Slide 1:", err);
-      });
+      slides
+        .getItemAt(0)
+        .applyTo(view)
+        .then(() => {
+          console.log("Camera moved to Slide 1.");
+        })
+        .catch((err) => {
+          console.error("Error applying Slide 1:", err);
+        });
     } else {
       console.warn("No slides found in the WebScene.");
     }
+  };
 
-    // Optional: Programmatically move to another slide by index
-    /*
-    const goToSlide = (slideIndex) => {
-      const slide = slides.getItemAt(slideIndex);
-      if (slide) {
-        slide.applyTo(view).then(() => {
+  // Function to navigate to a specific slide by index
+  const goToSlide = (slideIndex) => {
+    const slides = viewRef.current.map.presentation.slides;
+    const slide = slides.getItemAt(slideIndex);
+    if (slide) {
+      slide
+        .applyTo(viewRef.current)
+        .then(() => {
           console.log(`Camera moved to Slide: ${slide.title.text}`);
-        }).catch((err) => {
+          setCurrentSlideIndex(slideIndex); // Update current slide index
+        })
+        .catch((err) => {
           console.error(`Error applying Slide ${slideIndex + 1}:`, err);
         });
-      } else {
-        console.error("Slide index out of bounds.");
-      }
-    };
-
-    // Example: Move to slide 2 after 5 seconds
-    setTimeout(() => {
-      goToSlide(1); // Index starts from 0
-    }, 5000);
-    */
+    } else {
+      console.error("Slide index out of bounds.");
+    }
   };
+
+  // Function to navigate to the next slide
+  const nextSlide = () => {
+    const slides = viewRef.current.map.presentation.slides;
+    if (currentSlideIndex < slides.length - 1) {
+      goToSlide(currentSlideIndex + 1);
+    } else {
+      console.log("Already on the last slide.");
+    }
+  };
+
+  // Function to navigate to the previous slide
+  const prevSlide = () => {
+    if (currentSlideIndex > 0) {
+      goToSlide(currentSlideIndex - 1);
+    } else {
+      console.log("Already on the first slide.");
+    }
+  };
+
+  // State to track current slide index
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   // Effect to handle selectedStation changes
   useEffect(() => {
@@ -153,16 +175,19 @@ const SceneContainer = ({
       // Pan camera to selected station
       const { location } = selectedStation; // geometry object
       if (location && viewRef.current) {
-        viewRef.current.goTo({
-          target: location,
-          zoom: 1500, // Adjust as needed
-          tilt: 0,
-          heading: 0,
-        }).then(() => {
-          console.log(`Camera moved to station: ${selectedStation.name}`);
-        }).catch((err) => {
-          console.error("Error panning to selected station:", err);
-        });
+        viewRef.current
+          .goTo({
+            target: location,
+            zoom: 1500, // Adjust as needed
+            tilt: 0,
+            heading: 0,
+          })
+          .then(() => {
+            console.log(`Camera moved to station: ${selectedStation.name}`);
+          })
+          .catch((err) => {
+            console.error("Error panning to selected station:", err);
+          });
       }
     }
 
@@ -185,7 +210,11 @@ const SceneContainer = ({
       )}
       {selectedStation && (
         <div className="sidebar">
-          <button className="minimize-button" onClick={onSidebarMinimize}>
+          <button
+            className="minimize-button"
+            onClick={onSidebarMinimize}
+            aria-label="Minimize Sidebar"
+          >
             &times;
           </button>
           <div className="station-details">
@@ -195,6 +224,28 @@ const SceneContainer = ({
           </div>
         </div>
       )}
+      {/* Optional Slide Navigation Controls */}
+      {isVisible && (
+        <div className="slide-navigation">
+          <button
+            onClick={prevSlide}
+            disabled={currentSlideIndex === 0}
+            aria-label="Previous Slide"
+          >
+            Previous Slide
+          </button>
+          <button
+            onClick={nextSlide}
+            disabled={
+              currentSlideIndex ===
+              (viewRef.current?.map.presentation.slides.length || 1) - 1
+            }
+            aria-label="Next Slide"
+          >
+            Next Slide
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -202,12 +253,12 @@ const SceneContainer = ({
 // Define PropTypes outside the component
 SceneContainer.propTypes = {
   onSceneViewLoad: PropTypes.func.isRequired,
-  onStationSelect: PropTypes.func, // Optional
   selectedStation: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired, // Geometry object
   }),
+  onStationSelect: PropTypes.func, // Optional
   onSidebarMinimize: PropTypes.func.isRequired,
   isVisible: PropTypes.bool.isRequired, // New prop to control visibility
 };

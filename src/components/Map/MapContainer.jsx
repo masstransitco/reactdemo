@@ -1,6 +1,6 @@
 // src/components/Map/MapContainer.jsx
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Locate from "@arcgis/core/widgets/Locate"; // Import Locate widget
@@ -9,6 +9,8 @@ import "./MapContainer.css";
 
 // Import ArcGIS CSS
 import "@arcgis/core/assets/esri/themes/light/main.css";
+
+import { AppContext } from "../../context/AppContext"; // Import context
 
 // Define Hong Kong extent outside the component to prevent re-creation on every render
 const HONG_KONG_EXTENT = {
@@ -19,10 +21,10 @@ const HONG_KONG_EXTENT = {
   spatialReference: { wkid: 4326 },
 };
 
-const MapContainer = ({ onMapViewLoad, selectedStation }) => {
-  // Removed onStationSelect
+const MapContainer = ({ onMapViewLoad }) => {
   const mapRef = useRef(null);
   const viewRef = useRef(null); // To store MapView instance
+  const { selectedStation, setSelectedStation } = useContext(AppContext);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
 
@@ -42,7 +44,7 @@ const MapContainer = ({ onMapViewLoad, selectedStation }) => {
           container: mapRef.current,
           map: webMap,
           constraints: {
-            geometry: HONG_KONG_EXTENT,
+            geometry: HONG_KONG_EXTENT, // Ensure this is a valid Extent object
             rotationEnabled: false,
             minScale: 500000, // Adjust as needed
             maxScale: 1000, // Adjust as needed
@@ -75,8 +77,25 @@ const MapContainer = ({ onMapViewLoad, selectedStation }) => {
         view.ui.empty("top-left"); // Clear existing widgets
         view.ui.add(locateWidget, "top-left"); // Add only Locate widget
 
-        // Handle interactions (if any) from SceneContainer
-        // This will be handled via props/state in the parent component
+        // Add click event to handle station selection
+        view.on("click", (event) => {
+          view.hitTest(event).then((response) => {
+            const results = response.results;
+            if (results.length > 0) {
+              const graphic = results.filter(
+                (result) => result.graphic.layer.type === "feature"
+              )[0]?.graphic;
+              if (graphic) {
+                const station = {
+                  id: graphic.attributes.ID, // Adjust based on your attribute names
+                  name: graphic.attributes.Name, // Adjust based on your attribute names
+                  location: graphic.geometry,
+                };
+                setSelectedStation(station);
+              }
+            }
+          });
+        });
       } catch (err) {
         console.error("Error initializing MapView:", err);
         setError("Failed to load the map. Please try again later.");
@@ -92,7 +111,7 @@ const MapContainer = ({ onMapViewLoad, selectedStation }) => {
         view.destroy();
       }
     };
-  }, [onMapViewLoad]);
+  }, [onMapViewLoad, setSelectedStation]);
 
   useEffect(() => {
     if (!viewRef.current) return;
@@ -101,12 +120,19 @@ const MapContainer = ({ onMapViewLoad, selectedStation }) => {
       // Pan camera to selected station
       const { location } = selectedStation; // geometry object
       if (location && viewRef.current) {
-        viewRef.current.goTo({
-          target: location,
-          zoom: 1500, // Adjust as needed
-          tilt: 0,
-          heading: 0,
-        });
+        viewRef.current
+          .goTo({
+            target: location,
+            zoom: 1500, // Adjust as needed
+            tilt: 0,
+            heading: 0,
+          })
+          .then(() => {
+            console.log(`Camera moved to station: ${selectedStation.name}`);
+          })
+          .catch((err) => {
+            console.error("Error panning to selected station:", err);
+          });
       }
     }
 
@@ -133,9 +159,6 @@ const MapContainer = ({ onMapViewLoad, selectedStation }) => {
 
 MapContainer.propTypes = {
   onMapViewLoad: PropTypes.func.isRequired,
-  selectedStation: PropTypes.shape({
-    location: PropTypes.object, // Define shape based on your data structure
-  }),
 };
 
 export default MapContainer;
