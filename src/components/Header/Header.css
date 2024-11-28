@@ -2,6 +2,7 @@
 
 .app-header {
   display: flex;
+  height: min-content;
   justify-content: center; /* Center the toggle switch horizontally */
   align-items: center;
   background-color: var(--primary-black); /* Primary black background */

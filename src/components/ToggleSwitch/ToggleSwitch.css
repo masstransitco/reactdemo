@@ -1,8 +1,8 @@
 /* src/components/ToggleSwitch/ToggleSwitch.css */
 
 .toggle-switch {
-  width: 60px;
-  height: 30px;
+  width: 160px;
+  height: 50px;
   background-color: #ccc;
   border-radius: 15px;
   display: flex;
@@ -17,7 +17,7 @@
 }
 
 .toggle-button {
-  width: 28px;
+  width: 78px;
   height: 28px;
   background-color: var(--white);
   border-radius: 50%;

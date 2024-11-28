@@ -15,7 +15,7 @@ const SceneContainer = ({
   selectedStation,
   onStationSelect,
   onSidebarMinimize,
-  isVisible, // New prop to control visibility
+  isVisible, // Controls visibility
 }) => {
   const sceneRef = useRef(null);
   const viewRef = useRef(null); // To store SceneView instance
@@ -54,15 +54,7 @@ const SceneContainer = ({
             maxScale: 1000, // Adjust as needed
           },
           extent: hongKongExtent, // Set initial extent to Hong Kong
-          camera: {
-            position: [
-              114.1, // Longitude
-              22.3, // Latitude
-              1000, // Elevation in meters (closer view)
-            ],
-            tilt: 0,
-            heading: 0,
-          },
+          // Remove the camera property to allow slides to control the view
           environment: {
             lighting: {
               date: new Date(),
@@ -92,8 +84,8 @@ const SceneContainer = ({
         view.ui.empty("top-right"); // Clear existing widgets
         view.ui.add(compassWidget, "top-right"); // Add only Compass widget
 
-        // Handle interactions (if any) from MapContainer
-        // This will be handled via props/state in the parent component
+        // Manage slides after the WebScene has loaded
+        manageSlides(view, webScene);
       } catch (err) {
         console.error("Error initializing SceneView:", err);
         setError("Failed to load the scene. Please try again later.");
@@ -111,6 +103,48 @@ const SceneContainer = ({
     };
   }, [onSceneViewLoad]);
 
+  // Function to manage slides
+  const manageSlides = (view, webScene) => {
+    const slides = webScene.presentation.slides;
+
+    // Log all slides
+    slides.forEach((slide, index) => {
+      console.log(`Slide ${index + 1}: ${slide.title.text}`);
+    });
+
+    if (slides.length > 0) {
+      // Apply "Slide 1" as the initial view
+      slides.getItemAt(0).applyTo(view).then(() => {
+        console.log("Camera moved to Slide 1.");
+      }).catch((err) => {
+        console.error("Error applying Slide 1:", err);
+      });
+    } else {
+      console.warn("No slides found in the WebScene.");
+    }
+
+    // Optional: Programmatically move to another slide by index
+    /*
+    const goToSlide = (slideIndex) => {
+      const slide = slides.getItemAt(slideIndex);
+      if (slide) {
+        slide.applyTo(view).then(() => {
+          console.log(`Camera moved to Slide: ${slide.title.text}`);
+        }).catch((err) => {
+          console.error(`Error applying Slide ${slideIndex + 1}:`, err);
+        });
+      } else {
+        console.error("Slide index out of bounds.");
+      }
+    };
+
+    // Example: Move to slide 2 after 5 seconds
+    setTimeout(() => {
+      goToSlide(1); // Index starts from 0
+    }, 5000);
+    */
+  };
+
   // Effect to handle selectedStation changes
   useEffect(() => {
     if (!viewRef.current) return;
@@ -124,9 +158,14 @@ const SceneContainer = ({
           zoom: 1500, // Adjust as needed
           tilt: 0,
           heading: 0,
+        }).then(() => {
+          console.log(`Camera moved to station: ${selectedStation.name}`);
+        }).catch((err) => {
+          console.error("Error panning to selected station:", err);
         });
       }
     }
+
     // Lock camera movement and navigation
     viewRef.current.constraints.rotationEnabled = false;
     viewRef.current.constraints.tiltEnabled = false;
@@ -170,7 +209,7 @@ SceneContainer.propTypes = {
     location: PropTypes.object.isRequired, // Geometry object
   }),
   onSidebarMinimize: PropTypes.func.isRequired,
-  isVisible: PropTypes.bool.isRequired, // New prop
+  isVisible: PropTypes.bool.isRequired, // New prop to control visibility
 };
 
 export default SceneContainer;
