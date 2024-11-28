@@ -49,20 +49,6 @@ function App() {
     };
   }, [handleMapCameraChange, handleSceneCameraChange]);
 
-  // Function to handle camera changes from the Map
-  const onMapCameraChange = (newCamera) => {
-    if (isSyncing) return;
-    setIsSyncing(true);
-    handleMapCameraChange(newCamera);
-  };
-
-  // Function to handle camera changes from the Scene
-  const onSceneCameraChange = (newCamera) => {
-    if (isSyncing) return;
-    setIsSyncing(true);
-    handleSceneCameraChange(newCamera);
-  };
-
   return (
     <Router>
       <Routes>

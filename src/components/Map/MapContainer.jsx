@@ -19,7 +19,8 @@ const HONG_KONG_EXTENT = {
   spatialReference: { wkid: 4326 },
 };
 
-const MapContainer = ({ onMapViewLoad, selectedStation }) => { // Removed onStationSelect
+const MapContainer = ({ onMapViewLoad, selectedStation }) => {
+  // Removed onStationSelect
   const mapRef = useRef(null);
   const viewRef = useRef(null); // To store MapView instance
   const [error, setError] = useState(null);

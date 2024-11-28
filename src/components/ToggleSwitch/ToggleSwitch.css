@@ -41,10 +41,9 @@
 /* src/components/ToggleSwitch/ToggleSwitch.css */
 
 .toggle-switch:focus {
-    outline: 2px solid var(--secondary-blue);
-  }
-  
-  .toggle-switch:focus .toggle-button {
-    box-shadow: 0 0 0 2px var(--secondary-blue);
-  }
-  
+  outline: 2px solid var(--secondary-blue);
+}
+
+.toggle-switch:focus .toggle-button {
+  box-shadow: 0 0 0 2px var(--secondary-blue);
+}
