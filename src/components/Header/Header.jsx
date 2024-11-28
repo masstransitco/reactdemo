@@ -2,7 +2,7 @@
 
 import React, { useContext } from "react";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
-import PropTypes from "prop-types";
+
 import "./Header.css";
 import { AppContext } from "../../context/AppContext";
 
