@@ -1,15 +1,15 @@
 // src/components/Home.jsx
 
 import React from "react";
-// Removed Header and Footer imports
-import "./Home.css"; // Ensure this file exists for additional styles if needed
+import PropTypes from "prop-types";
+import "./Home.css";
 
 const Home = ({ children }) => {
-  return (
-    <div className="home-container">
-      <main>{children}</main>
-    </div>
-  );
+  return <div className="home-container">{children}</div>;
+};
+
+Home.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default Home;

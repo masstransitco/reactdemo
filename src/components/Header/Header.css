@@ -1,90 +1,10 @@
 /* src/components/Header/Header.css */
 
 .app-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px 20px;
   display: flex;
-  justify-content: space-between; /* Space between toggle-container and scene-toggle-button */
+  justify-content: center; /* Center the toggle switch horizontally */
   align-items: center;
-  background: transparent; /* Make header background transparent */
-  z-index: 1000;
-}
-
-.toggle-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: rgba(
-    255,
-    255,
-    255,
-    0.2
-  ); /* Optional: semi-transparent background */
-  border-radius: 25px;
-  padding: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.toggle-base {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background-color: #555555; /* Base color */
-  border-radius: 2px;
-  z-index: -1;
-}
-
-.toggle-button {
-  flex: 1;
-  padding: 10px 20px;
-  margin: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: #ffffff; /* Button text color */
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.toggle-button.active {
-  background-color: #ffffff; /* Active button background */
-  color: #000000; /* Active button text color */
-  border-radius: 20px;
-}
-
-.toggle-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-}
-
-.scene-toggle-button {
-  background-color: #ffffff;
-  color: #000000;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.scene-toggle-button:hover {
-  background-color: #dddddd;
-}
-
-@media (max-width: 600px) {
-  .toggle-button {
-    padding: 8px 16px;
-    font-size: 14px;
-  }
-
-  .scene-toggle-button {
-    padding: 6px 12px;
-    font-size: 12px;
-  }
+  background-color: var(--primary-black); /* Primary black background */
+  padding: 1rem 2rem;
+  color: var(--white); /* White text */
 }

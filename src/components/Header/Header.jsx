@@ -2,41 +2,26 @@
 
 import React, { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
+import ToggleSwitch from "../ToggleSwitch/ToggleSwitch"; // Import ToggleSwitch
 import "./Header.css";
 
-const Header = ({ onToggleScene }) => {
-  // Receive the toggle function as a prop
+const Header = () => {
   const { currentMarkerType, setCurrentMarkerType } = useContext(AppContext);
 
-  const handleToggle = (type) => {
-    setCurrentMarkerType(type);
+  const isOn = currentMarkerType === "Cars";
+
+  const handleToggle = () => {
+    setCurrentMarkerType(isOn ? "Stations" : "Cars");
   };
 
   return (
     <header className="app-header">
-      <div className="toggle-container">
-        <div className="toggle-base"></div>
-        <button
-          className={`toggle-button ${
-            currentMarkerType === "Cars" ? "active" : ""
-          }`}
-          onClick={() => handleToggle("Cars")}
-        >
-          Cars
-        </button>
-        <button
-          className={`toggle-button ${
-            currentMarkerType === "Stations" ? "active" : ""
-          }`}
-          onClick={() => handleToggle("Stations")}
-        >
-          Stations
-        </button>
-      </div>
-      <button className="scene-toggle-button" onClick={onToggleScene}>
-        {/* You can use an icon here */}
-        Toggle Scene
-      </button>
+      <ToggleSwitch
+        isOn={isOn}
+        handleToggle={handleToggle}
+        onLabel="Cars"
+        offLabel="Stations"
+      />
     </header>
   );
 };

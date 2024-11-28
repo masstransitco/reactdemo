@@ -1,11 +1,11 @@
 // src/components/Map/MapSceneToggle.jsx
 
 import React, { useState, useRef } from "react";
-import MapContainer from "./MapContainer"; // Correct relative path
-import SceneContainer from "./SceneContainer"; // Now in the same directory
-import Header from "../Header/Header"; // Navigate up one level to Header
-import Footer from "../Footer/Footer"; // Navigate up one level to Footer
-import "./MapSceneToggle.css"; // Correct relative path
+import MapContainer from "./MapContainer";
+import SceneContainer from "./SceneContainer";
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
+import "./MapSceneToggle.css";
 
 const MapSceneToggle = () => {
   const [selectedStation, setSelectedStation] = useState(null);
@@ -25,11 +25,6 @@ const MapSceneToggle = () => {
     setIsSceneVisible(false); // Hide the SceneContainer when minimized
   };
 
-  // Toggle SceneContainer visibility
-  const toggleSceneVisibility = () => {
-    setIsSceneVisible((prev) => !prev);
-  };
-
   // Store MapView instance (if needed for future enhancements)
   const handleMapViewLoad = (view) => {
     mapViewRef.current = view;
@@ -42,20 +37,21 @@ const MapSceneToggle = () => {
 
   return (
     <div className="map-scene-toggle">
-      <Header onToggleScene={toggleSceneVisibility} />{" "}
-      {/* Pass toggle function */}
+      <Header />
       <MapContainer
         onMapViewLoad={handleMapViewLoad}
         onStationSelect={handleStationSelect}
         selectedStation={selectedStation}
       />
-      <SceneContainer
-        onSceneViewLoad={handleSceneViewLoad}
-        selectedStation={selectedStation}
-        onStationSelect={handleStationSelect}
-        onSidebarMinimize={handleSidebarMinimize}
-        isVisible={isSceneVisible} // Pass visibility prop
-      />
+      {isSceneVisible && (
+        <SceneContainer
+          onSceneViewLoad={handleSceneViewLoad}
+          selectedStation={selectedStation}
+          onStationSelect={handleStationSelect}
+          onSidebarMinimize={handleSidebarMinimize}
+          isVisible={isSceneVisible} // Pass visibility prop
+        />
+      )}
       <Footer />
     </div>
   );

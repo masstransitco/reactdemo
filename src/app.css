@@ -1,8 +1,17 @@
-/* src/App.css */
+/* ===========================================
+   1. Global Variables
+   =========================================== */
+
+:root {
+  --primary-black: #000000;
+  --secondary-blue: #276ef1;
+  --white: #ffffff;
+  /* Add more variables if needed */
+}
 
 /* ===========================================
-   1. Global Reset and Base Styles
-   =========================================== */
+     2. Global Reset and Base Styles
+     =========================================== */
 
 /* Reset some default browser styles */
 * {
@@ -19,14 +28,14 @@ html,
   padding: 0;
   height: 100%;
   width: 100%;
-  background-color: #000000; /* Uber's black */
-  color: #ffffff; /* Default text color */
+  background-color: var(--primary-black); /* Primary black */
+  color: var(--white); /* Default text color */
   font-family: Arial, sans-serif;
 }
 
 /* ===========================================
-   2. Layout Configuration
-   =========================================== */
+     3. Layout Configuration
+     =========================================== */
 
 .home-container {
   padding-top: 60px; /* Adjust based on header height */
@@ -37,7 +46,7 @@ html,
 /* Header and Footer Styles */
 header,
 footer {
-  background-color: #f8f8f8;
+  background-color: var(--primary-black); /* Updated to primary black */
   padding: 1rem 2rem;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -45,12 +54,12 @@ footer {
 
 /* Header Specific Styles */
 header {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #333333; /* Darker border for primary black */
 }
 
 /* Footer Specific Styles */
 footer {
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #333333; /* Darker border for primary black */
 }
 
 /* Main Content Area */
@@ -60,18 +69,18 @@ main {
   flex-direction: column;
   overflow: hidden; /* Prevent scrolling within main */
   padding: 1rem 2rem;
-  background-color: #fafafa;
+  background-color: var(--primary-black); /* Updated to primary black */
 }
 
 /* ===========================================
-   3. Component-Specific Styles
-   =========================================== */
+     4. Component-Specific Styles
+     =========================================== */
 
 /* Map Container: Occupies 60% of the viewport height */
 .map-container {
   width: 100%;
   height: 60vh; /* 60% of viewport height */
-  border: 1px solid #ddd; /* Optional: Add a border for distinction */
+  border: 1px solid #555555; /* Optional: Add a border for distinction */
   border-radius: 8px;
   overflow: hidden; /* Ensure map doesn't overflow */
   margin-bottom: 1rem; /* Space between map and scene */
@@ -81,14 +90,14 @@ main {
 .scene-container {
   width: 100%;
   height: 40vh; /* 40% of viewport height */
-  border: 1px solid #ddd; /* Optional: Add a border for distinction */
+  border: 1px solid #555555; /* Optional: Add a border for distinction */
   border-radius: 8px;
   overflow: hidden; /* Ensure scene doesn't overflow */
 }
 
 /* ===========================================
-   4. Responsive Design
-   =========================================== */
+     5. Responsive Design
+     =========================================== */
 
 /* Adjust layout for tablets and smaller screens */
 @media (max-width: 1024px) {
@@ -123,8 +132,8 @@ main {
 }
 
 /* ===========================================
-   5. Typography and Link Styles
-   =========================================== */
+     6. Typography and Link Styles
+     =========================================== */
 
 /* Headings */
 h1,
@@ -145,7 +154,7 @@ p {
 
 /* Links */
 a {
-  color: #1a0dab;
+  color: var(--secondary-blue); /* Updated to secondary blue */
   text-decoration: none;
 }
 
@@ -156,8 +165,8 @@ a:hover {
 /* Buttons */
 button {
   padding: 0.5rem 1rem;
-  background-color: #1a73e8;
-  color: #ffffff;
+  background-color: var(--secondary-blue); /* Updated to secondary blue */
+  color: var(--white); /* White text */
   border: none;
   border-radius: 4px;
   font-size: 1rem;
@@ -165,7 +174,7 @@ button {
 }
 
 button:hover {
-  background-color: #1669c1;
+  background-color: darken(var(--secondary-blue), 10%); /* Darker on hover */
 }
 
 button:disabled {
@@ -174,8 +183,8 @@ button:disabled {
 }
 
 /* ===========================================
-   6. Utility Classes
-   =========================================== */
+     7. Utility Classes
+     =========================================== */
 
 /* Flex Centering */
 .flex-center {
@@ -227,15 +236,15 @@ button:disabled {
 
 /* Background Colors */
 .bg-light {
-  background-color: #f8f8f8;
+  background-color: #333333; /* Darker background */
 }
 
 .bg-white {
-  background-color: #ffffff;
+  background-color: var(--white);
 }
 
 .bg-gray {
-  background-color: #e0e0e0;
+  background-color: #555555; /* Updated to darker gray */
 }
 
 /* Text Alignment */
@@ -252,8 +261,8 @@ button:disabled {
 }
 
 /* ===========================================
-   7. Additional Styles (Optional)
-   =========================================== */
+     8. Additional Styles (Optional)
+     =========================================== */
 
 /* Scrollbar Styling */
 ::-webkit-scrollbar {

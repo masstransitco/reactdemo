@@ -70,10 +70,7 @@ function App() {
           path="/"
           element={
             <Home>
-              <MapSceneToggle
-                onMapCameraChange={onMapCameraChange}
-                onSceneCameraChange={onSceneCameraChange}
-              />
+              <MapSceneToggle />
             </Home>
           }
         />
