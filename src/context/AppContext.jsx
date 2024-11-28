@@ -1,4 +1,4 @@
-export const AppProvider = ({ children }) => {
+export const AppContext = ({ children }) => {
   const [currentMarkerType, setCurrentMarkerType] = useState("Cars");
   const [selectedStation, setSelectedStation] = useState(null);
 
