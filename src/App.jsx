@@ -1,6 +1,6 @@
 // src/App.jsx
 
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, { useRef, useCallback, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import About from "./components/About";
@@ -13,32 +13,6 @@ function App() {
   const mapViewRef = useRef(null);
   const sceneViewRef = useRef(null);
 
-  // Debounced camera change handlers to prevent rapid state updates
-  const handleMapCameraChange = useCallback(
-    debounce((newCamera) => {
-      if (sceneViewRef.current) {
-        sceneViewRef.current.goTo(newCamera).then(() => {
-          setIsSyncing(false);
-        });
-      } else {
-        setIsSyncing(false);
-      }
-    }, 300),
-    [sceneViewRef]
-  );
-
-  const handleSceneCameraChange = useCallback(
-    debounce((newCamera) => {
-      if (mapViewRef.current) {
-        mapViewRef.current.goTo(newCamera).then(() => {
-          setIsSyncing(false);
-        });
-      } else {
-        setIsSyncing(false);
-      }
-    }, 300),
-    [mapViewRef]
-  );
 
   // Cleanup debounced functions on unmount to prevent memory leaks
   useEffect(() => {
