@@ -2,10 +2,10 @@
 
 .app-header {
   display: flex;
-  height: min-content;
+  height: 60px; /* Example fixed height */
   justify-content: center; /* Center the toggle switch horizontally */
   align-items: center;
   background-color: var(--primary-black); /* Primary black background */
-  padding: 1rem 2rem;
+  padding: 0 1rem; /* Horizontal padding */
   color: var(--white); /* White text */
 }

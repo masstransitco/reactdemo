@@ -1,6 +1,6 @@
 // src/components/Map/MapSceneToggle.jsx
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import MapContainer from "./MapContainer";
 import SceneContainer from "./SceneContainer";
 import Header from "../Header/Header";
@@ -13,12 +13,6 @@ const MapSceneToggle = () => {
   const [isSceneVisible, setIsSceneVisible] = useState(false); // Visibility state
   const mapViewRef = useRef(null);
   const sceneViewRef = useRef(null);
-
-  // Callback when a station is selected in the MapContainer
-  const handleStationSelect = (station) => {
-    setSelectedStation(station);
-    setIsSceneVisible(true); // Show the SceneContainer when a station is selected
-  };
 
   // Callback to minimize the SceneContainer sidebar
   const handleSidebarMinimize = () => {
@@ -36,20 +30,24 @@ const MapSceneToggle = () => {
     sceneViewRef.current = view;
   };
 
+  // Effect to toggle SceneContainer visibility based on selectedStation
+  useEffect(() => {
+    if (selectedStation) {
+      setIsSceneVisible(true);
+    } else {
+      setIsSceneVisible(false);
+    }
+  }, [selectedStation]);
+
   return (
     <div className="map-scene-toggle">
       <Header />
-      <MapContainer
-        onMapViewLoad={handleMapViewLoad}
-        onStationSelect={handleStationSelect}
+      <MapContainer onMapViewLoad={handleMapViewLoad} />
+      <SceneContainer
+        onSceneViewLoad={handleSceneViewLoad}
+        onSidebarMinimize={handleSidebarMinimize}
+        isVisible={isSceneVisible} // Pass visibility prop
       />
-      {isSceneVisible && (
-        <SceneContainer
-          onSceneViewLoad={handleSceneViewLoad}
-          onSidebarMinimize={handleSidebarMinimize}
-          isVisible={isSceneVisible} // Pass visibility prop
-        />
-      )}
       <Footer />
     </div>
   );

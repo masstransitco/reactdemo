@@ -4,11 +4,22 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./ToggleSwitch.css";
 
-const ToggleSwitch = ({ isOn, handleToggle, onLabel, offLabel }) => {
+const ToggleSwitch = ({ isOn, handleToggle }) => {
   return (
-    <div className="toggle-switch" onClick={handleToggle}>
+    <div
+      className="toggle-switch"
+      onClick={handleToggle}
+      role="switch"
+      aria-checked={isOn}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          handleToggle();
+        }
+      }}
+    >
       <div className={`toggle-button ${isOn ? "active" : ""}`}>
-        {isOn ? onLabel : offLabel}
+        {isOn ? "3D" : "2D"}
       </div>
     </div>
   );
@@ -17,13 +28,6 @@ const ToggleSwitch = ({ isOn, handleToggle, onLabel, offLabel }) => {
 ToggleSwitch.propTypes = {
   isOn: PropTypes.bool.isRequired,
   handleToggle: PropTypes.func.isRequired,
-  onLabel: PropTypes.string,
-  offLabel: PropTypes.string,
-};
-
-ToggleSwitch.defaultProps = {
-  onLabel: "ON",
-  offLabel: "OFF",
 };
 
 export default ToggleSwitch;

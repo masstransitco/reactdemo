@@ -1,34 +1,35 @@
 // src/components/Scene/SceneContainer.jsx
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
 import Compass from "@arcgis/core/widgets/Compass";
 import PropTypes from "prop-types";
 import "./SceneContainer.css";
+import { AppContext } from "../../context/AppContext"; // Import context
 
 // Import ArcGIS CSS
 import "@arcgis/core/assets/esri/themes/light/main.css";
 
 const SceneContainer = ({
   onSceneViewLoad,
-  selectedStation,
   onSidebarMinimize,
   isVisible, // Controls visibility
 }) => {
   const sceneRef = useRef(null);
   const viewRef = useRef(null); // To store SceneView instance
+  const { selectedStation } = useContext(AppContext); // Access selectedStation from context
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
 
   // Define Hong Kong extent in WGS84 as an actual Extent object
-  const HONG_KONG_EXTENT = new __esri.Extent({
+  const HONG_KONG_EXTENT = {
     xmin: 113.7,
     ymin: 22.15,
     xmax: 114.4,
     ymax: 22.55,
     spatialReference: { wkid: 4326 },
-  });
+  };
 
   // Initialization Effect
   useEffect(() => {
@@ -253,12 +254,6 @@ const SceneContainer = ({
 // Define PropTypes outside the component
 SceneContainer.propTypes = {
   onSceneViewLoad: PropTypes.func.isRequired,
-  selectedStation: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    location: PropTypes.object.isRequired, // Geometry object
-  }),
-  onStationSelect: PropTypes.func, // Optional
   onSidebarMinimize: PropTypes.func.isRequired,
   isVisible: PropTypes.bool.isRequired, // New prop to control visibility
 };

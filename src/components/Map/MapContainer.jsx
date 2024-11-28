@@ -3,7 +3,8 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
-import Locate from "@arcgis/core/widgets/Locate"; // Import Locate widget
+import Graphic from "@arcgis/core/Graphic";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import PropTypes from "prop-types";
 import "./MapContainer.css";
 
@@ -27,6 +28,7 @@ const MapContainer = ({ onMapViewLoad }) => {
   const { selectedStation, setSelectedStation } = useContext(AppContext);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [userLocation, setUserLocation] = useState(null); // State to store user location
 
   useEffect(() => {
     let view;
@@ -63,19 +65,12 @@ const MapContainer = ({ onMapViewLoad }) => {
           onMapViewLoad(view);
         }
 
-        // Initialize the Locate widget
-        const locateWidget = new Locate({
-          view: view,
-          useHeadingEnabled: false, // Disable heading
-          goToOverride: function (view, options) {
-            options.target.scale = 1500; // Adjust the zoom scale as needed
-            return view.goTo(options.target);
-          },
-        });
+        // Create a GraphicsLayer for user location
+        const userLayer = new GraphicsLayer();
+        webMap.add(userLayer);
 
-        // Remove all existing widgets and add only the Locate widget
-        view.ui.empty("top-left"); // Clear existing widgets
-        view.ui.add(locateWidget, "top-left"); // Add only Locate widget
+        // Store the userLayer reference for later use
+        viewRef.current.userLayer = userLayer;
 
         // Add click event to handle station selection
         view.on("click", (event) => {
@@ -143,15 +138,78 @@ const MapContainer = ({ onMapViewLoad }) => {
     viewRef.current.constraints.zoomEnabled = true;
   }, [selectedStation]);
 
+  // Function to handle user location
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const userPoint = {
+          type: "point",
+          longitude: longitude,
+          latitude: latitude,
+        };
+        setUserLocation(userPoint);
+
+        // Create a graphic for the user's location
+        const userGraphic = new Graphic({
+          geometry: userPoint,
+          symbol: {
+            type: "simple-marker",
+            color: [46, 204, 113], // Green color
+            outline: {
+              color: [255, 255, 255],
+              width: 2,
+            },
+            size: "12px",
+          },
+        });
+
+        // Clear previous user location graphics
+        viewRef.current.userLayer.graphics.removeAll();
+
+        // Add the new user location graphic
+        viewRef.current.userLayer.add(userGraphic);
+
+        // Pan and zoom to user's location
+        viewRef.current
+          .goTo({
+            target: userPoint,
+            zoom: 1500, // Adjust as needed
+          })
+          .then(() => {
+            console.log("Camera moved to user location.");
+          })
+          .catch((err) => {
+            console.error("Error panning to user location:", err);
+          });
+      },
+      (error) => {
+        console.error("Error obtaining geolocation:", error);
+        alert("Unable to retrieve your location.");
+      }
+    );
+  };
+
   return (
     <>
       {error ? (
         <div className="error-message">{error}</div>
       ) : (
-        <div
-          className={`map-container ${isLoading ? "loading" : ""}`}
-          ref={mapRef}
-        ></div>
+        <div className={`map-container ${isLoading ? "loading" : ""}`}>
+          <button
+            className="custom-locate-button"
+            onClick={handleLocateMe}
+            aria-label="Locate Me"
+          >
+            📍
+          </button>
+          <div ref={mapRef} style={{ height: "100%", width: "100%" }}></div>
+        </div>
       )}
     </>
   );

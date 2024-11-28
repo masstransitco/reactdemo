@@ -3,7 +3,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { AppProvider } from "./context/AppContext";
+import { AppContext } from "./context/AppContext";
+
+ReactDOM.render(
+  <React.StrictMode>
+    <AppProvider>
+      <App />
+    </AppProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
 
 // Import Global CSS
 import "./styles/globals.css";
@@ -22,8 +31,8 @@ const root = ReactDOM.createRoot(rootElement);
 
 root.render(
   <React.StrictMode>
-    <AppProvider>
+    <AppContext>
       <App />
-    </AppProvider>
+    </AppContext>
   </React.StrictMode>
 );

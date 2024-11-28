@@ -1,4 +1,13 @@
-export const AppContext = ({ children }) => {
+// src/context/AppContext.jsx
+
+import React, { createContext, useState } from "react";
+import PropTypes from "prop-types";
+
+// Create the Context
+export const AppContext = createContext();
+
+// Create the Provider Component
+export const AppProvider = ({ children }) => {
   const [currentMarkerType, setCurrentMarkerType] = useState("Cars");
   const [selectedStation, setSelectedStation] = useState(null);
 
