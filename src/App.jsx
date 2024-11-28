@@ -12,7 +12,6 @@ import debounce from "lodash.debounce"; // Ensure lodash.debounce is installed
 function App() {
   const mapViewRef = useRef(null);
   const sceneViewRef = useRef(null);
-  const [isSyncing, setIsSyncing] = useState(false);
 
   // Debounced camera change handlers to prevent rapid state updates
   const handleMapCameraChange = useCallback(
