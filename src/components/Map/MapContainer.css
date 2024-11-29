@@ -1,10 +1,36 @@
 /* src/components/Map/MapContainer.css */
 
-/* Container for the 2D Map */
 .map-container {
+  position: relative;
   width: 100%;
-  height: 100vh;
-  background-color: #000000; /* Match app background */
+  height: 100%;
+}
+
+/* Styling for the custom locate button */
+.custom-locate-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10; /* Ensure it's above the map */
+  background-color: var(--secondary-blue);
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.custom-locate-button:hover {
+  background-color: #1a5bb8; /* Darker shade on hover */
+  transform: scale(1.1);
+}
+
+.custom-locate-button:focus {
+  outline: 2px solid var(--primary-black);
 }
 
 .loading::after {
@@ -14,98 +40,17 @@
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 1.5em;
-  color: #ffffff;
+  color: #555;
 }
 
-/* Error Message Styling */
 .error-message {
-  /* Centers the error message both vertically and horizontally */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: red;
-  text-align: center;
-  margin-top: 20px;
-
-  /* Occupies the full viewport to overlay the map */
-  height: 100vh;
-  width: 100%;
-
-  /* Background color indicating an error */
-  background-color: #f8d7da;
-
-  /* Text color for readability */
-  color: #721c24;
-
-  /* Increased font size for visibility */
-  font-size: 1.2em;
-
-  /* Centers the text */
-  text-align: center;
-
-  /* Padding for spacing */
-  padding: 20px;
-
-  /* Ensures padding is included in the element's total width and height */
-  box-sizing: border-box;
-
-  /* Optional: Add a border or shadow to highlight the error message */
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-
-  /* Positioning to ensure it overlays the container */
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-  .map-container {
-    height: 100vh;
-    width: 100%;
-  }
-
-  .error-message {
-    font-size: 1em;
-    padding: 15px;
-  }
-}
-
-/* Loading Overlay Styling */
-.map-container.loading::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* Semi-transparent overlay */
-  background: rgba(255, 255, 255, 0.7);
-  z-index: 1;
-  /* Display the overlay */
-  display: block;
-}
-
-/* Loading Spinner */
-.map-container.loading::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 50px;
-  height: 50px;
-  margin: -25px 0 0 -25px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #555;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  z-index: 2;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }

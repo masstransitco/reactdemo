@@ -19,7 +19,7 @@ const ToggleSwitch = ({ isOn, handleToggle }) => {
       }}
     >
       <div className={`toggle-button ${isOn ? "active" : ""}`}>
-        {isOn ? "3D" : "2D"}
+        {isOn ? "Bikes" : "Cars"}
       </div>
     </div>
   );

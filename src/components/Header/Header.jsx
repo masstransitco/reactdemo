@@ -2,12 +2,13 @@
 
 import React, { useContext } from "react";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
-
 import "./Header.css";
 import { AppContext } from "../../context/AppContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Header = () => {
   const { currentMarkerType, setCurrentMarkerType } = useContext(AppContext);
+  const { user } = useContext(AuthContext);
 
   const handleToggle = () => {
     setCurrentMarkerType((prevType) =>
@@ -18,16 +19,17 @@ const Header = () => {
 
   return (
     <header className="app-header">
-      <ToggleSwitch
-        isOn={currentMarkerType === "3D"}
-        handleToggle={handleToggle}
-      />
+      <ToggleSwitch isOn={currentMarkerType === "Bikes"} handleToggle={handleToggle} />
+      {user ? (
+        <div className="user-avatar">
+          <img src={user.photoURL} alt="User Avatar" />
+          {/* Implement Dropdown here */}
+        </div>
+      ) : (
+        <button className="sign-in-button">Sign In</button>
+      )}
     </header>
   );
-};
-
-Header.propTypes = {
-  // No props passed to Header in this implementation
 };
 
 export default Header;

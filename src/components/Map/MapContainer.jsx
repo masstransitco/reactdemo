@@ -25,10 +25,10 @@ const HONG_KONG_EXTENT = {
 const MapContainer = ({ onMapViewLoad }) => {
   const mapRef = useRef(null);
   const viewRef = useRef(null); // To store MapView instance
-  const { selectedStation, setSelectedStation } = useContext(AppContext);
+  const { setSelectedStation } = useContext(AppContext);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
-  const [setUserLocation] = useState(null); // State to store user location
+  const [userLocation, setUserLocation] = useState(null); // State to store user location
 
   useEffect(() => {
     let view;
@@ -77,9 +77,9 @@ const MapContainer = ({ onMapViewLoad }) => {
           view.hitTest(event).then((response) => {
             const results = response.results;
             if (results.length > 0) {
-              const graphic = results.filter(
-                (result) => result.graphic.layer.type === "feature"
-              )[0]?.graphic;
+              const graphic = results
+                .filter((result) => result.graphic.layer.type === "feature")[0]
+                ?.graphic;
               if (graphic) {
                 const station = {
                   id: graphic.attributes.ID, // Adjust based on your attribute names
@@ -111,24 +111,19 @@ const MapContainer = ({ onMapViewLoad }) => {
   useEffect(() => {
     if (!viewRef.current) return;
 
-    if (selectedStation) {
-      // Pan camera to selected station
-      const { location } = selectedStation; // geometry object
-      if (location && viewRef.current) {
-        viewRef.current
-          .goTo({
-            target: location,
-            zoom: 1500, // Adjust as needed
-            tilt: 0,
-            heading: 0,
-          })
-          .then(() => {
-            console.log(`Camera moved to station: ${selectedStation.name}`);
-          })
-          .catch((err) => {
-            console.error("Error panning to selected station:", err);
-          });
-      }
+    if (userLocation) {
+      // Pan camera to user location
+      viewRef.current
+        .goTo({
+          target: userLocation,
+          zoom: 1500, // Adjust as needed
+        })
+        .then(() => {
+          console.log("Camera moved to user location.");
+        })
+        .catch((err) => {
+          console.error("Error panning to user location:", err);
+        });
     }
 
     // Allow camera movement in MapContainer
@@ -136,7 +131,7 @@ const MapContainer = ({ onMapViewLoad }) => {
     viewRef.current.constraints.tiltEnabled = true;
     viewRef.current.constraints.panEnabled = true;
     viewRef.current.constraints.zoomEnabled = true;
-  }, [selectedStation]);
+  }, [userLocation]);
 
   // Function to handle user location
   const handleLocateMe = () => {
@@ -174,19 +169,6 @@ const MapContainer = ({ onMapViewLoad }) => {
 
         // Add the new user location graphic
         viewRef.current.userLayer.add(userGraphic);
-
-        // Pan and zoom to user's location
-        viewRef.current
-          .goTo({
-            target: userPoint,
-            zoom: 1500, // Adjust as needed
-          })
-          .then(() => {
-            console.log("Camera moved to user location.");
-          })
-          .catch((err) => {
-            console.error("Error panning to user location:", err);
-          });
       },
       (error) => {
         console.error("Error obtaining geolocation:", error);

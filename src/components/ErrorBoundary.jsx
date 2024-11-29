@@ -1,39 +1,35 @@
-// src/ErrorBoundary.jsx
+// src/components/ErrorBoundary.jsx
 
 import React from "react";
+import PropTypes from "prop-types";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, errorInfo: null };
   }
 
   static getDerivedStateFromError(error) {
-    // Update state so the next render shows the fallback UI.
-    return { hasError: true };
+    // Update state to display fallback UI
+    return { hasError: true, errorInfo: error };
   }
 
   componentDidCatch(error, errorInfo) {
-    // You can log the error to an error reporting service here
-    console.error("Uncaught error:", error, errorInfo);
+    // Log the error details
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return (
-        <div style={{ padding: "2rem", textAlign: "center" }}>
-          <h2>Something went wrong.</h2>
-          <p>
-            Please try refreshing the page or contact support if the problem
-            persists.
-          </p>
-        </div>
-      );
+      return <h1>Something went wrong. Please try again later.</h1>;
     }
 
     return this.props.children;
   }
 }
+
+ErrorBoundary.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default ErrorBoundary;

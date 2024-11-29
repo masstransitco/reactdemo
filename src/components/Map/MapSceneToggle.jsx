@@ -1,12 +1,14 @@
 // src/components/Map/MapSceneToggle.jsx
 
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useEffect, useState, Suspense, lazy } from "react";
 import MapContainer from "./MapContainer";
-import SceneContainer from "./SceneContainer";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import "./MapSceneToggle.css";
 import { AppContext } from "../../context/AppContext";
+
+// Lazy load SceneContainer for performance optimization
+const SceneContainer = lazy(() => import("../Scene/SceneContainer"));
 
 const MapSceneToggle = () => {
   const { selectedStation, setSelectedStation } = useContext(AppContext);
@@ -43,11 +45,13 @@ const MapSceneToggle = () => {
     <div className="map-scene-toggle">
       <Header />
       <MapContainer onMapViewLoad={handleMapViewLoad} />
-      <SceneContainer
-        onSceneViewLoad={handleSceneViewLoad}
-        onSidebarMinimize={handleSidebarMinimize}
-        isVisible={isSceneVisible} // Pass visibility prop
-      />
+      <Suspense fallback={<div className="scene-container hidden">Loading 3D Scene...</div>}>
+        <SceneContainer
+          onSceneViewLoad={handleSceneViewLoad}
+          onSidebarMinimize={handleSidebarMinimize}
+          isVisible={isSceneVisible} // Pass visibility prop
+        />
+      </Suspense>
       <Footer />
     </div>
   );

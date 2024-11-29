@@ -2,10 +2,38 @@
 
 .app-header {
   display: flex;
-  height: 60px; /* Example fixed height */
+  height: 40px; /* Adjusted to 25% of original height */
   justify-content: center; /* Center the toggle switch horizontally */
   align-items: center;
   background-color: var(--primary-black); /* Primary black background */
-  padding: 0 1rem; /* Horizontal padding */
+  padding: 0.25rem 1rem; /* Reduced padding */
   color: var(--white); /* White text */
+  position: relative;
+}
+
+.user-avatar {
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.user-avatar img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.sign-in-button {
+  position: absolute;
+  right: 20px;
+  background-color: var(--secondary-blue);
+  color: var(--white);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sign-in-button:hover {
+  background-color: #1a5bb8; /* Darker shade on hover */
 }
