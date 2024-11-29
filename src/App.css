@@ -1,8 +1,17 @@
-/* src/App.css */
+/* ===========================================
+   1. Global Variables
+   =========================================== */
+
+:root {
+  --primary-black: #000000;
+  --secondary-blue: #276ef1;
+  --white: #ffffff;
+  /* Add more variables if needed */
+}
 
 /* ===========================================
-   1. Global Reset and Base Styles
-   =========================================== */
+     2. Global Reset and Base Styles
+     =========================================== */
 
 /* Reset some default browser styles */
 * {
@@ -11,28 +20,33 @@
   box-sizing: border-box;
 }
 
-/* Set body and html to occupy full height and use a default font */
-body, html, #root {
+body,
+html,
+#root,
+.app-container {
+  margin: 0;
+  padding: 0;
   height: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #ffffff; /* Set a default background color */
-  color: #333333; /* Default text color */
+  width: 100%;
+  background-color: var(--primary-black); /* Primary black */
+  color: var(--white); /* Default text color */
+  font-family: Arial, sans-serif;
 }
 
 /* ===========================================
-   2. Layout Configuration
-   =========================================== */
+     3. Layout Configuration
+     =========================================== */
 
-/* Home Container: Flex layout to stack header, main, and footer */
 .home-container {
-  display: flex;
-  flex-direction: column;
+  padding-top: 60px; /* Adjust based on header height */
+  position: relative;
   height: 100%;
 }
 
 /* Header and Footer Styles */
-header, footer {
-  background-color: #f8f8f8;
+header,
+footer {
+  background-color: var(--primary-black); /* Updated to primary black */
   padding: 1rem 2rem;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -40,12 +54,12 @@ header, footer {
 
 /* Header Specific Styles */
 header {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #333333; /* Darker border for primary black */
 }
 
 /* Footer Specific Styles */
 footer {
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #333333; /* Darker border for primary black */
 }
 
 /* Main Content Area */
@@ -55,18 +69,18 @@ main {
   flex-direction: column;
   overflow: hidden; /* Prevent scrolling within main */
   padding: 1rem 2rem;
-  background-color: #fafafa;
+  background-color: var(--primary-black); /* Updated to primary black */
 }
 
 /* ===========================================
-   3. Component-Specific Styles
-   =========================================== */
+     4. Component-Specific Styles
+     =========================================== */
 
 /* Map Container: Occupies 60% of the viewport height */
 .map-container {
   width: 100%;
   height: 60vh; /* 60% of viewport height */
-  border: 1px solid #ddd; /* Optional: Add a border for distinction */
+  border: 1px solid #555555; /* Optional: Add a border for distinction */
   border-radius: 8px;
   overflow: hidden; /* Ensure map doesn't overflow */
   margin-bottom: 1rem; /* Space between map and scene */
@@ -76,14 +90,14 @@ main {
 .scene-container {
   width: 100%;
   height: 40vh; /* 40% of viewport height */
-  border: 1px solid #ddd; /* Optional: Add a border for distinction */
+  border: 1px solid #555555; /* Optional: Add a border for distinction */
   border-radius: 8px;
   overflow: hidden; /* Ensure scene doesn't overflow */
 }
 
 /* ===========================================
-   4. Responsive Design
-   =========================================== */
+     5. Responsive Design
+     =========================================== */
 
 /* Adjust layout for tablets and smaller screens */
 @media (max-width: 1024px) {
@@ -91,7 +105,8 @@ main {
     padding: 1rem;
   }
 
-  header, footer {
+  header,
+  footer {
     padding: 0.8rem 1.5rem;
   }
 }
@@ -102,7 +117,8 @@ main {
     padding: 0.5rem 1rem;
   }
 
-  header, footer {
+  header,
+  footer {
     padding: 0.5rem 1rem;
   }
 
@@ -116,11 +132,16 @@ main {
 }
 
 /* ===========================================
-   5. Typography and Link Styles
-   =========================================== */
+     6. Typography and Link Styles
+     =========================================== */
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-bottom: 0.5rem;
   font-weight: 600;
 }
@@ -133,7 +154,7 @@ p {
 
 /* Links */
 a {
-  color: #1a0dab;
+  color: var(--secondary-blue); /* Updated to secondary blue */
   text-decoration: none;
 }
 
@@ -144,8 +165,8 @@ a:hover {
 /* Buttons */
 button {
   padding: 0.5rem 1rem;
-  background-color: #1a73e8;
-  color: #ffffff;
+  background-color: var(--secondary-blue); /* Updated to secondary blue */
+  color: var(--white); /* White text */
   border: none;
   border-radius: 4px;
   font-size: 1rem;
@@ -153,7 +174,7 @@ button {
 }
 
 button:hover {
-  background-color: #1669c1;
+  background-color: darken(var(--secondary-blue), 10%); /* Darker on hover */
 }
 
 button:disabled {
@@ -162,8 +183,8 @@ button:disabled {
 }
 
 /* ===========================================
-   6. Utility Classes
-   =========================================== */
+     7. Utility Classes
+     =========================================== */
 
 /* Flex Centering */
 .flex-center {
@@ -173,33 +194,57 @@ button:disabled {
 }
 
 /* Margin Helpers */
-.mt-1 { margin-top: 0.25rem; }
-.mt-2 { margin-top: 0.5rem; }
-.mt-3 { margin-top: 0.75rem; }
-.mt-4 { margin-top: 1rem; }
+.mt-1 {
+  margin-top: 0.25rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mt-3 {
+  margin-top: 0.75rem;
+}
+.mt-4 {
+  margin-top: 1rem;
+}
 
-.mb-1 { margin-bottom: 0.25rem; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-3 { margin-bottom: 0.75rem; }
-.mb-4 { margin-bottom: 1rem; }
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
 
 /* Padding Helpers */
-.p-1 { padding: 0.25rem; }
-.p-2 { padding: 0.5rem; }
-.p-3 { padding: 0.75rem; }
-.p-4 { padding: 1rem; }
+.p-1 {
+  padding: 0.25rem;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+.p-3 {
+  padding: 0.75rem;
+}
+.p-4 {
+  padding: 1rem;
+}
 
 /* Background Colors */
 .bg-light {
-  background-color: #f8f8f8;
+  background-color: #333333; /* Darker background */
 }
 
 .bg-white {
-  background-color: #ffffff;
+  background-color: var(--white);
 }
 
 .bg-gray {
-  background-color: #e0e0e0;
+  background-color: #555555; /* Updated to darker gray */
 }
 
 /* Text Alignment */
@@ -216,8 +261,8 @@ button:disabled {
 }
 
 /* ===========================================
-   7. Additional Styles (Optional)
-   =========================================== */
+     8. Additional Styles (Optional)
+     =========================================== */
 
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
@@ -225,14 +270,14 @@ button:disabled {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }

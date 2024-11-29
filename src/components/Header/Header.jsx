@@ -19,7 +19,10 @@ const Header = () => {
 
   return (
     <header className="app-header">
-      <ToggleSwitch isOn={currentMarkerType === "Bikes"} handleToggle={handleToggle} />
+      <ToggleSwitch
+        isOn={currentMarkerType === "Bikes"}
+        handleToggle={handleToggle}
+      />
       {user ? (
         <div className="user-avatar">
           <img src={user.photoURL} alt="User Avatar" />

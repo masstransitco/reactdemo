@@ -1,6 +1,13 @@
 // src/components/Map/MapSceneToggle.jsx
 
-import React, { useContext, useRef, useEffect, useState, Suspense, lazy } from "react";
+import React, {
+  useContext,
+  useRef,
+  useEffect,
+  useState,
+  Suspense,
+  lazy,
+} from "react";
 import MapContainer from "./MapContainer";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
@@ -45,7 +52,11 @@ const MapSceneToggle = () => {
     <div className="map-scene-toggle">
       <Header />
       <MapContainer onMapViewLoad={handleMapViewLoad} />
-      <Suspense fallback={<div className="scene-container hidden">Loading 3D Scene...</div>}>
+      <Suspense
+        fallback={
+          <div className="scene-container hidden">Loading 3D Scene...</div>
+        }
+      >
         <SceneContainer
           onSceneViewLoad={handleSceneViewLoad}
           onSidebarMinimize={handleSidebarMinimize}

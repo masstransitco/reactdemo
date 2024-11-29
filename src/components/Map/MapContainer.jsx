@@ -77,9 +77,9 @@ const MapContainer = ({ onMapViewLoad }) => {
           view.hitTest(event).then((response) => {
             const results = response.results;
             if (results.length > 0) {
-              const graphic = results
-                .filter((result) => result.graphic.layer.type === "feature")[0]
-                ?.graphic;
+              const graphic = results.filter(
+                (result) => result.graphic.layer.type === "feature"
+              )[0]?.graphic;
               if (graphic) {
                 const station = {
                   id: graphic.attributes.ID, // Adjust based on your attribute names
