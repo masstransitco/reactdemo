@@ -6,7 +6,7 @@ import "./Header.css";
 import { AppContext } from "../../context/AppContext";
 import { AuthContext } from "../../context/AuthContext";
 import GoogleSignIn from "../GoogleSignIn";
-import { loadModules } from "@arcgis/core";
+import { loadModules } from "@esri-loader";
 
 const Header = () => {
   const { currentMarkerType, setCurrentMarkerType, mapView } =
