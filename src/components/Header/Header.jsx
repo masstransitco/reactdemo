@@ -5,7 +5,7 @@ import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 import "./Header.css";
 import { AppContext } from "../../context/AppContext";
 import { AuthContext } from "../../context/AuthContext";
-import GoogleSignIn from "../GoogleSignIn/GoogleSignIn";
+import GoogleSignIn from "../GoogleSignIn";
 import { loadModules } from "@arcgis/core";
 
 const Header = () => {
