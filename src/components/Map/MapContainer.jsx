@@ -5,7 +5,6 @@ import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import * as geocoding from "@arcgis/core/rest/geocode";
 import Locate from "@arcgis/core/widgets/Locate";
 import Search from "@arcgis/core/widgets/Search";
 import PropTypes from "prop-types";
