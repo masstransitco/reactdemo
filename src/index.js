@@ -1,7 +1,7 @@
 // src/index.js
 
 import React from "react";
-import ReactDOM from "react-dom/client"; // Correct import for React 18+
+import ReactDOM from "react-dom/client"; // Use 'react-dom/client' for React 18+
 import App from "./App";
 import { AppProvider } from "./context/AppContext";
 import { AuthProvider } from "./context/AuthContext";

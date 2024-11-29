@@ -2,23 +2,8 @@
 
 import React, { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-
-// Firebase configuration (replace with your own)
-const firebaseConfig = {
-  apiKey: "AIzaSyAj46uOcP-Y4T3X2ZpdlWt4_PxUWCTFwyM",
-  authDomain: "masstransitcompany.firebaseapp.com",
-  projectId: "masstransitcompany",
-  storageBucket: "masstransitcompany.firebasestorage.app",
-  messagingSenderId: "1039705984668",
-  appId: "1:1039705984668:web:e85aafd14917825b3d6759",
-  measurementId: "G-NMMQLPBJD1",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { auth } from "../services/firebase"; // Correct path
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 // Create the Context
 export const AuthContext = createContext();
@@ -28,7 +13,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Listen for authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
@@ -37,11 +21,22 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  const logout = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("User signed out.");
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+      });
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         auth,
+        logout,
       }}
     >
       {children}

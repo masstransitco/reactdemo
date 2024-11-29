@@ -21,6 +21,7 @@ const SceneContainer = ({
   const { selectedStation } = useContext(AppContext); // Access selectedStation from context
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [isExpanded, setIsExpanded] = useState(true); // Sidebar expanded by default
 
   // Define Hong Kong extent in WGS84
   const HONG_KONG_EXTENT = {
@@ -30,6 +31,9 @@ const SceneContainer = ({
     ymax: 22.55,
     spatialReference: { wkid: 4326 },
   };
+
+  // State to track current slide index
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   // Initialization Effect
   useEffect(() => {
@@ -165,9 +169,6 @@ const SceneContainer = ({
     }
   };
 
-  // State to track current slide index
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-
   // Effect to handle selectedStation changes
   useEffect(() => {
     if (!viewRef.current) return;
@@ -199,8 +200,17 @@ const SceneContainer = ({
     viewRef.current.constraints.zoomEnabled = false;
   }, [selectedStation]);
 
+  // Function to toggle sidebar expansion
+  const toggleSidebar = () => {
+    setIsExpanded((prev) => !prev);
+  };
+
   return (
-    <div className={`scene-container ${isVisible ? "visible" : "hidden"}`}>
+    <div
+      className={`scene-container ${
+        isVisible ? (isExpanded ? "expanded" : "collapsed") : "hidden"
+      }`}
+    >
       {error ? (
         <div className="error-message">{error}</div>
       ) : (
@@ -212,11 +222,11 @@ const SceneContainer = ({
       {selectedStation && (
         <div className="sidebar">
           <button
-            className="minimize-button"
-            onClick={onSidebarMinimize}
-            aria-label="Minimize Sidebar"
+            className="toggle-button"
+            onClick={toggleSidebar}
+            aria-label={isExpanded ? "Minimize Sidebar" : "Expand Sidebar"}
           >
-            &times;
+            {isExpanded ? "Minimize" : "Expand"}
           </button>
           <div className="station-details">
             <h2>{selectedStation.name}</h2>
@@ -226,7 +236,7 @@ const SceneContainer = ({
         </div>
       )}
       {/* Slide Navigation Buttons */}
-      {isVisible && (
+      {isVisible && isExpanded && (
         <div className="slide-navigation">
           <button
             onClick={prevSlide}

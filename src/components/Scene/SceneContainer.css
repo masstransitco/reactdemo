@@ -2,28 +2,29 @@
 
 .scene-container {
   position: absolute;
-  top: 60px; /* Adjust based on header height */
-  right: 0;
-  width: 40%; /* Adjust as needed */
-  height: calc(100% - 60px); /* Full height minus header */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%; /* 40% of screen height */
   background-color: rgba(255, 255, 255, 0.95); /* Semi-transparent background */
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease-in-out; /* Smooth transition */
-  transform: translateX(100%); /* Start hidden */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease-in-out, height 0.3s ease-in-out;
+  transform: translateY(0); /* Start expanded */
   z-index: 1000; /* Ensure it's above other elements */
+  display: flex;
+  flex-direction: column;
 }
 
-.scene-container.visible {
-  transform: translateX(0); /* Slide into view */
+.scene-container.collapsed {
+  height: 10%; /* Shrink height when collapsed */
 }
 
 .scene-container.hidden {
-  transform: translateX(100%); /* Slide out of view */
+  display: none; /* Hide when not visible */
 }
 
 .scene-view {
-  width: 100%;
-  height: 100%;
+  flex: 1;
 }
 
 .loading::after {
@@ -49,48 +50,43 @@
 }
 
 .sidebar {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: white;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  z-index: 20;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.minimize-button {
-  background: transparent;
+.toggle-button {
+  background-color: var(--secondary-blue);
+  color: var(--white);
   border: none;
-  font-size: 1.2em;
-  position: absolute;
-  top: 5px;
-  right: 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.station-details {
-  margin-top: 20px;
+.toggle-button:hover {
+  background-color: #1a5bb8; /* Darker shade on hover */
 }
 
-/* Slide Navigation Buttons */
+.station-details {
+  margin-top: 10px;
+}
+
 .slide-navigation {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
+  justify-content: center;
   gap: 10px;
+  padding: 10px 0;
 }
 
 .slide-navigation button {
-  padding: 10px 20px;
+  padding: 8px 16px;
   background-color: var(--secondary-blue);
   color: var(--white);
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .slide-navigation button:disabled {
@@ -100,4 +96,20 @@
 
 .slide-navigation button:hover:not(:disabled) {
   background-color: #1a5bb8; /* Darker shade on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .scene-container {
+    height: 50%; /* Adjust height for smaller screens */
+  }
+
+  .scene-container.collapsed {
+    height: 15%;
+  }
+
+  .slide-navigation button {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
 }

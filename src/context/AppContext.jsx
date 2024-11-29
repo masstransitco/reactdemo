@@ -10,6 +10,7 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [currentMarkerType, setCurrentMarkerType] = useState("Cars");
   const [selectedStation, setSelectedStation] = useState(null);
+  const [mapView, setMapView] = useState(null); // Add mapView state
 
   return (
     <AppContext.Provider
@@ -18,6 +19,8 @@ export const AppProvider = ({ children }) => {
         setCurrentMarkerType,
         selectedStation,
         setSelectedStation,
+        mapView,
+        setMapView,
       }}
     >
       {children}

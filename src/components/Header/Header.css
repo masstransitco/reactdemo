@@ -11,10 +11,12 @@
   position: relative;
 }
 
-.user-avatar {
+.user-section {
   position: absolute;
   right: 20px;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .user-avatar img {
@@ -23,9 +25,7 @@
   border-radius: 50%;
 }
 
-.sign-in-button {
-  position: absolute;
-  right: 20px;
+.logout-button {
   background-color: var(--secondary-blue);
   color: var(--white);
   border: none;
@@ -34,6 +34,6 @@
   cursor: pointer;
 }
 
-.sign-in-button:hover {
+.logout-button:hover {
   background-color: #1a5bb8; /* Darker shade on hover */
 }
